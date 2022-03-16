@@ -274,6 +274,7 @@ namespace AGC_Sharp.ISA
         {
             cpu.AdderX = 0;
             cpu.AdderY = cpu.WriteBus;
+            cpu.AdderCarry = false;
         }
 
         public static void WY12(Cpu cpu)

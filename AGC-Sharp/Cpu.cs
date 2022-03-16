@@ -69,10 +69,6 @@ namespace AGC_Sharp
         public byte ControlPulseCount { get; private set; }   // Reset upon every new subinstruction
         #endregion
 
-        #region Debugging Helpers
-        public string CurrentSubinstructionMnemonic { get; set; }
-        #endregion
-
         /// <summary>
         /// Initializes the CPU and its control pulse queue.
         /// </summary>
