@@ -61,6 +61,60 @@ namespace AGC_Sharp
             }
         }
 
+        public ushort ReadWord(ushort address, Cpu cpu)
+        {
+            // Sanity check
+            if (address >= (0x0FFF))
+            {
+                throw new ArgumentOutOfRangeException(nameof(address),
+                    $"The specified address is outside the bounds of total memory ({0x0FFF} words).");
+            }
+
+            if (address < 0x400)    // Erasable memory
+            {
+                if (address >= 0x300 && address <= 0x3FF)   // Banked erasable memory
+                {
+                    address &= 0x00FF;
+                    address |= (ushort)(cpu.RegisterEB & 0x0F00);
+                    return ReadErasable(address);
+                }
+                else
+                {
+                    return ReadErasable(address);
+                }
+            }
+            else                    // Fixed memory
+            {
+                if (address >= 0x400 && address <= 0x7FF)   // Bankable fixed memory
+                {
+                    address &= 0x03FF;
+                    address |= (ushort)(cpu.RegisterFB & 0x7C00);
+                    return ReadFixed(address);
+                }
+                else
+                {
+                    return ReadFixed(address);
+                }
+            }
+        }
+
+        private ushort ReadErasable(ushort address)
+        {
+            ushort temp = Erasable[address];
+            Erasable[address] = 0;  // Erasable reads are destructive, value is zeroed until writeback
+            return temp;
+        }
+
+        private ushort ReadFixed(ushort address)
+        {
+            return Fixed[address];
+        }
+
+        public void WriteErasableWord(ushort address, ushort value)
+        {
+            Erasable[address] = value;
+        }
+
         /// <summary>
         /// Writes a block of words into erasable memory.
         /// Generally used for loading a memory state at computer startup.

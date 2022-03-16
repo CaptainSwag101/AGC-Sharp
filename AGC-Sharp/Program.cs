@@ -27,7 +27,7 @@ namespace AGC_Sharp
                 if (systemClock.Elapsed.TotalSeconds >= (1 / CLOCK_FREQUENCY))
                 {
                     systemClock.Restart();
-                    cpu.Tick();
+                    cpu.Tick(memory);
                 }
             }
         }
