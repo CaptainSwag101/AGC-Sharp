@@ -6,6 +6,7 @@
     <RootNamespace>AGC_Sharp</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <StartupObject>AGC_Sharp.Program</StartupObject>
   </PropertyGroup>
 
 </Project>
