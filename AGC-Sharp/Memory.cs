@@ -87,8 +87,8 @@ namespace AGC_Sharp
             {
                 if (address >= 0x400 && address <= 0x7FF)   // Bankable fixed memory
                 {
-                    address &= 0x03FF;
-                    address |= (ushort)(cpu.RegisterFB & 0x7C00);
+                    address &= 0x07FF;
+                    address |= (ushort)((cpu.RegisterFB & 0x7C00) << 2);
                     return ReadFixed(address);
                 }
                 else
@@ -123,12 +123,12 @@ namespace AGC_Sharp
         /// <param name="index">The zero-based starting index where the array will be placed.</param>
         public void WriteErasableBlock(ushort[] wordArray, int index = 0)
         {
-            if (wordArray.Length >= ERASABLE_MEM_SIZE)
+            if (wordArray.Length > ERASABLE_MEM_SIZE)
             {
                 throw new ArgumentOutOfRangeException(nameof(wordArray),
                     $"The provided array is larger than the size of erasable memory ({ERASABLE_MEM_SIZE} words).");
             }
-            else if (index + wordArray.Length >= ERASABLE_MEM_SIZE)
+            else if (index + wordArray.Length > ERASABLE_MEM_SIZE)
             {
                 throw new ArgumentOutOfRangeException(nameof(index),
                     $"The provided index would prevent some or all of the array from fitting within erasable memory ({ERASABLE_MEM_SIZE} words).");
@@ -148,12 +148,12 @@ namespace AGC_Sharp
         /// <param name="index">The zero-based starting index where the array will be placed.</param>
         public void WriteFixedBlock(ushort[] wordArray, int index = 0)
         {
-            if (wordArray.Length >= FIXED_MEM_SIZE)
+            if (wordArray.Length > FIXED_MEM_SIZE)
             {
                 throw new ArgumentOutOfRangeException(nameof(wordArray),
                     $"The provided array is larger than the size of fixed memory ({FIXED_MEM_SIZE} words).");
             }
-            else if (index + wordArray.Length >= FIXED_MEM_SIZE)
+            else if (index + wordArray.Length > FIXED_MEM_SIZE)
             {
                 throw new ArgumentOutOfRangeException(nameof(index),
                     $"The provided index would prevent some or all of the array from fitting within fixed memory ({FIXED_MEM_SIZE} words).");
