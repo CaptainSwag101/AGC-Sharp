@@ -24,8 +24,10 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));
             cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
             cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RG, WB, TSGN, TMZ, TPZG }));
-            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
-            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RAD, WB, WS }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RZ, WY12 }));
+            //cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RZ, WY12, PONEX }));
+            //cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RZ, WY12, PTWOX }));
+            //cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RZ, WY12, PONEX, PTWOX }));
         }
 
         public static void GOJ1(Cpu cpu)

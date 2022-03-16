@@ -26,7 +26,31 @@ namespace AGC_Sharp
         public ushort RegisterSQ { get; set; }
         public ushort RegisterZ { get; set; }   // Program Counter
         public ushort RegisterEB { get; set; }  // Erasable bank
-        public ushort RegisterFB { get; set; }  // Fixed bank
+        private ushort _registerFB;
+        public ushort RegisterFB                // Fixed bank
+        {
+            get
+            {
+                return DoubleSignBitCreate(_registerFB);
+            }
+            set
+            {
+                _registerFB = DoubleSignBitDelete(value, true);
+            }
+        }
+        public ushort RegisterBB
+        {
+            get
+            {
+                return (ushort)(RegisterFB | (RegisterEB >> 8));
+            }
+            set
+            {
+                RegisterEB = (ushort)((value & 7) << 8);
+                RegisterFB = value;
+                _registerFB &= 0x7C00;
+            }
+        }
         #endregion
 
         #region Internal Data
@@ -65,10 +89,35 @@ namespace AGC_Sharp
             // If there are control pulses left to be performed, perform them if it's the proper pulse number
             if (ControlPulseQueue.Count > 0)
             {
-                if (ControlPulseQueue.Peek().PulseNum == ControlPulseCount)
+                // If we have multiple possible lists of control pulses to perform at the current time pulse,
+                // copy them into a list and choose the correct one afterward.
+                List<List<ControlPulseFunc>> branchPulseList = new();
+                foreach (var ctrlPulseEntry in ControlPulseQueue)
                 {
-                    List<ControlPulseFunc> pulses = ControlPulseQueue.Dequeue().PulseList;
-                    foreach (var pulse in pulses)
+                    if (ctrlPulseEntry.PulseNum == ControlPulseCount)
+                    {
+                        branchPulseList.Add(ctrlPulseEntry.PulseList);
+                    }
+                }
+
+                // Dequeue and discard however many pulse lists we copied in the previous step
+                for (int i = 0; i < branchPulseList.Count; ++i)
+                {
+                    _ = ControlPulseQueue.Dequeue();
+                }
+
+                // If there is more than one pulse list, execute the list index indicated
+                // by the BR register (between 0 and 3).
+                if (branchPulseList.Count > 1)
+                {
+                    foreach (var pulse in branchPulseList[RegisterBR])
+                    {
+                        pulse(this);
+                    }
+                }
+                else if (branchPulseList.Count > 0)     // Otherwise just execute the first and only entry.
+                {
+                    foreach (var pulse in branchPulseList[0])
                     {
                         pulse(this);
                     }
@@ -91,11 +140,14 @@ namespace AGC_Sharp
                 {
                     RegisterG = memory.ReadWord(RegisterS, this);
                 }
+
+                RegisterG = DoubleSignBitDelete(RegisterG, false);
             }
 
             // Only perform writeback if we performed an erasable read earlier
             if (ControlPulseCount == 9 && RegisterS_Temp > 0)
             {
+                // TODO: Theoretically we should be re-computing the parity bit because it is discarded when loading into G
                 memory.WriteErasableWord(RegisterS_Temp, RegisterG);    // This is the only place we ever write to erasable memory!
                 RegisterS_Temp = 0;
             }
@@ -107,7 +159,9 @@ namespace AGC_Sharp
                 ControlPulseCount = 0;  // This will be incremented to 1 shortly hereafter
                 RegisterST = RegisterST_Next;
                 RegisterST_Next = 0;
-                RegisterSQ = (ushort)(RegisterB & 0xBE00);  // Copy bits 16,14-10
+
+                if (NextInstruction)
+                    RegisterSQ = (ushort)(RegisterB & 0xBE00);  // Copy bits 16,14-10
 
                 PrepNextSubinstruction();
                 NextInstruction = false;
@@ -123,6 +177,8 @@ namespace AGC_Sharp
         private void PrepNextSubinstruction()
         {
             // This function is going to be a mess. I could make a bit flag table but there would be so many redundant entries.
+            byte regSQ16_10_Spliced = (byte)(DoubleSignBitDelete(RegisterSQ, true) >> 9); // Use only bits 16,14-10
+
             if (RegisterST == 2)
             {
                 ISA.Subinstructions.STD2(this);
@@ -131,13 +187,13 @@ namespace AGC_Sharp
             {
                 if (RegisterST == 0)
                 {
-                    switch (RegisterSQ >> 13)
+                    switch (regSQ16_10_Spliced >> 3)
                     {
                         case 0:
                             ISA.Subinstructions.TC0(this);
                             break;
                         case 1:
-                            switch (RegisterSQ >> 10 & 3)
+                            switch ((regSQ16_10_Spliced >> 1) & 3)
                             {
                                 case 0:
                                     ISA.Subinstructions.CCS0(this);
@@ -152,11 +208,29 @@ namespace AGC_Sharp
                         case 3:
                             ISA.Subinstructions.CA0(this);
                             break;
+                        case 4:
+                            // TODO
+                            break;
+                        case 5:
+                            switch ((regSQ16_10_Spliced >> 1) & 3)
+                            {
+                                case 0:
+                                    //ISA.Subinstructions.NDX0(this);
+                                    break;
+                                case 1:
+                                    //ISA.Subinstructions.DXCH0(this);
+                                case 2:
+                                    //ISA.Subinstructions.TS0(this);
+                                case 3:
+                                    ISA.Subinstructions.XCH0(this);
+                                    break;
+                            }
+                            break;
                     }
                 }
                 else if (RegisterST == 1)
                 {
-                    switch (RegisterSQ >> 13)
+                    switch (regSQ16_10_Spliced >> 12)
                     {
                         case 0:
                             ISA.Subinstructions.GOJ1(this);
@@ -178,6 +252,21 @@ namespace AGC_Sharp
         private ushort GetBankedErasableAddress()
         {
             return (ushort)((RegisterS & 0xFF) | (RegisterEB & 0x700));
+        }
+
+        private ushort DoubleSignBitCreate(ushort inVal)
+        {
+            inVal &= 0b0111111111111111;    // Mask out bit 16 just in case
+            inVal |= (ushort)((inVal << 1) & 0b1000000000000000);   // Copy bit 15 into bit 16
+            return inVal;
+        }
+
+        private ushort DoubleSignBitDelete(ushort inVal, bool maskBit16)
+        {
+            inVal &= 0b1011111111111111;    // Mask out the parity bit
+            inVal |= (ushort)((inVal >> 1) & 0b0100000000000000);   // Copy the sign bit into bit 15
+            if (maskBit16) inVal &= 0b0111111111111111;    // Mask out the old bit 16
+            return inVal;
         }
     }
 }

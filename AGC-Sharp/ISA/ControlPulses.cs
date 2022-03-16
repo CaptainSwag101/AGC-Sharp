@@ -83,7 +83,7 @@ namespace AGC_Sharp.ISA
                 3 => cpu.RegisterEB,
                 4 => cpu.RegisterFB,
                 5 => cpu.RegisterZ,
-                6 => (ushort)(cpu.RegisterFB | (cpu.RegisterEB >> 8)),
+                6 => cpu.RegisterBB,
                 _ => 0
             };
             cpu.WriteBus |= val;
@@ -212,9 +212,7 @@ namespace AGC_Sharp.ISA
                     cpu.RegisterZ = cpu.WriteBus;
                     break;
                 case 6:
-                    // TODO: These may not be the correct bit shifts/masks
-                    cpu.RegisterEB = (ushort)((cpu.WriteBus & 7) << 8);
-                    cpu.RegisterFB = (ushort)(cpu.WriteBus & 0xF800);
+                    cpu.RegisterBB = cpu.WriteBus;
                     break;
             };
         }
@@ -227,7 +225,7 @@ namespace AGC_Sharp.ISA
         public static void WY12(Cpu cpu)
         {
             cpu.AdderX = 0;
-            cpu.AdderY = cpu.WriteBus;
+            cpu.AdderY = (ushort)(cpu.WriteBus & 0x0FFF);
             cpu.AdderCarry = false;
         }
 

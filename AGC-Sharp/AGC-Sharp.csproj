@@ -9,4 +9,10 @@
     <StartupObject>AGC_Sharp.Program</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Update="Retread50.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
