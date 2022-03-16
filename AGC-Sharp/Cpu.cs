@@ -107,6 +107,7 @@ namespace AGC_Sharp
                 ControlPulseCount = 0;  // This will be incremented to 1 shortly hereafter
                 RegisterST = RegisterST_Next;
                 RegisterST_Next = 0;
+                RegisterSQ = (ushort)(RegisterB & 0xBE00);  // Copy bits 16,14-10
 
                 PrepNextSubinstruction();
                 NextInstruction = false;
@@ -121,6 +122,7 @@ namespace AGC_Sharp
 
         private void PrepNextSubinstruction()
         {
+            // This function is going to be a mess. I could make a bit flag table but there would be so many redundant entries.
             if (RegisterST == 2)
             {
                 ISA.Subinstructions.STD2(this);
@@ -133,6 +135,19 @@ namespace AGC_Sharp
                     {
                         case 0:
                             ISA.Subinstructions.TC0(this);
+                            break;
+                        case 1:
+                            switch (RegisterSQ >> 10 & 3)
+                            {
+                                case 0:
+                                    ISA.Subinstructions.CCS0(this);
+                                    break;
+                                case 1:
+                                case 2:
+                                case 3:
+                                    ISA.Subinstructions.TCF0(this);
+                                    break;
+                            }
                             break;
                         case 3:
                             ISA.Subinstructions.CA0(this);
