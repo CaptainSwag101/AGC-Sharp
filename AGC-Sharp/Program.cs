@@ -15,7 +15,9 @@ namespace AGC_Sharp
             memory.WriteErasableBlock(new ushort[1], 2046);
 
             // DEBUG: Run a test subinstruction
-            ISA.Subinstructions.CA0(cpu);
+            ISA.Subinstructions.GOJ1(cpu);
+            //ISA.Subinstructions.CA0(cpu);
+            //cpu.RegisterS = 45;
 
             // The Stopwatch class provides a high-resolution timer
             // that should serve our needs for a 1.024 MHz clock.
