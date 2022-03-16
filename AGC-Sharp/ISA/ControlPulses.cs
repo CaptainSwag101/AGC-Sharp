@@ -13,9 +13,24 @@ namespace AGC_Sharp.ISA
             cpu.AdderCarry = true;
         }
 
+        public static void MONEX(Cpu cpu)
+        {
+            cpu.AdderX |= 0b1111111111111110;   // Set all but bit 1 to 1
+        }
+
         public static void NISQ(Cpu cpu)
         {
             cpu.NextInstruction = true;
+        }
+
+        public static void PONEX(Cpu cpu)
+        {
+            cpu.AdderX |= 1;
+        }
+
+        public static void PTWOX(Cpu cpu)
+        {
+            cpu.AdderX |= 2;
         }
 
         public static void RAD(Cpu cpu)
@@ -43,6 +58,16 @@ namespace AGC_Sharp.ISA
             }
         }
 
+        public static void R1C(Cpu cpu)
+        {
+            cpu.WriteBus = 0xFFFE;
+        }
+
+        public static void RB1(Cpu cpu)
+        {
+            cpu.WriteBus = 1;
+        }
+
         public static void RA(Cpu cpu)
         {
             cpu.WriteBus |= cpu.RegisterA;
@@ -51,6 +76,11 @@ namespace AGC_Sharp.ISA
         public static void RB(Cpu cpu)
         {
             cpu.WriteBus |= cpu.RegisterB;
+        }
+
+        public static void RC(Cpu cpu)
+        {
+            cpu.WriteBus |= (ushort)(cpu.RegisterB ^ 0xFFFF);
         }
 
         public static void RG(Cpu cpu)
@@ -122,6 +152,24 @@ namespace AGC_Sharp.ISA
             if (cpu.WriteBus == 0xFFFF)
             {
                 cpu.RegisterBR |= 2;
+            }
+        }
+
+        public static void TOV(Cpu cpu)
+        {
+            byte overflowTest = (byte)(cpu.WriteBus >> 14);
+
+            switch (overflowTest)
+            {
+                case 1: // bits are 01, positive overflow
+                    cpu.RegisterBR = overflowTest;
+                    break;
+                case 2:
+                    cpu.RegisterBR = overflowTest;
+                    break;
+                default:
+                    cpu.RegisterBR = 0;
+                    break;
             }
         }
 
@@ -220,6 +268,12 @@ namespace AGC_Sharp.ISA
         public static void WQ(Cpu cpu)
         {
             cpu.RegisterQ = cpu.WriteBus;
+        }
+
+        public static void WY(Cpu cpu)
+        {
+            cpu.AdderX = 0;
+            cpu.AdderY = cpu.WriteBus;
         }
 
         public static void WY12(Cpu cpu)

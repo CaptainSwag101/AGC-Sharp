@@ -66,7 +66,11 @@ namespace AGC_Sharp
 
         #region Control Pulse Data
         public Queue<(byte PulseNum, List<ControlPulseFunc> PulseList)> ControlPulseQueue { get; set; }  // Control pulse activation number, function
-        public byte ControlPulseCount { get; private set; }   // Reset upon every new instruction
+        public byte ControlPulseCount { get; private set; }   // Reset upon every new subinstruction
+        #endregion
+
+        #region Debugging Helpers
+        public string CurrentSubinstructionMnemonic { get; set; }
         #endregion
 
         /// <summary>
@@ -219,8 +223,10 @@ namespace AGC_Sharp
                                     break;
                                 case 1:
                                     //ISA.Subinstructions.DXCH0(this);
+                                    break;
                                 case 2:
-                                    //ISA.Subinstructions.TS0(this);
+                                    ISA.Subinstructions.TS0(this);
+                                    break;
                                 case 3:
                                     ISA.Subinstructions.XCH0(this);
                                     break;
