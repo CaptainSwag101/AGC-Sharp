@@ -17,12 +17,22 @@ namespace AGC_Sharp.ISA
         private static List<(int Stage, bool Extend, string Sequence, SubinstructionFunc Function)> ImplementedSubinstructions = new()
         {
             (2, false, "xxxxxx", Subinstructions.STD2),
-            (2, true, "xxxxxx", Subinstructions.STD2),
+            (2, true,  "xxxxxx", Subinstructions.STD2),
             (0, false, "000xxx", Subinstructions.TC0),
             (0, false, "00101x", Subinstructions.TCF0),
             (0, false, "00110x", Subinstructions.TCF0),
             (0, false, "00111x", Subinstructions.TCF0),
-            (0, false, "00100x", Subinstructions.TCF0),
+            (0, false, "00100x", Subinstructions.CCS0),
+            (0, false, "011xxx", Subinstructions.CA0),
+            (0, false, "100xxx", Subinstructions.CS0),
+            (0, false, "10110x", Subinstructions.TS0),
+            (0, false, "10111x", Subinstructions.XCH0),
+            (0, false, "01001x", Subinstructions.LXCH0),
+            (0, true,  "01001x", Subinstructions.QXCH0),
+            (0, false, "10100x", Subinstructions.NDX0),
+            (1, false, "10100x", Subinstructions.NDX1),
+            (0, false, "110xxx", Subinstructions.AD0),
+            (1, false, "000xxx", Subinstructions.GOJ1),
         };
 
         public static void PopulateDictionary()
@@ -50,28 +60,31 @@ namespace AGC_Sharp.ISA
             foreach (var implemented in ImplementedSubinstructions)
             {
                 // Generate a bit mask from the sequence string
-                byte skippableBits = 0;
+                byte maskPattern = 0;
                 byte patternToMatch = 0;
-                for (byte i = 0; i < 6; ++i)
+                for (byte i = 0; i < implemented.Sequence.Length; ++i)
                 {
                     char c = implemented.Sequence[i];
 
-                    if (c == 'x')
+                    if (c != 'x')
                     {
-                        ++skippableBits;
+                        maskPattern |= (byte)(1 << (5 - i));
                     }
-                    else if (c == '1')
+                    
+                    if (c == '1')
                     {
-                        patternToMatch |= (byte)(1 << i);
+                        patternToMatch |= (byte)(1 << (5 - i));
                     }
                 }
+
+                _ = 0;
 
                 foreach (var sub in SubinstructionDictionary)
                 {
                     // If the key matches, replace its instruction function with the proper one
                     if (sub.Key.Stage == implemented.Stage
                         && sub.Key.Extend == implemented.Extend
-                        && (byte)(sub.Key.Sequence >> skippableBits) == patternToMatch)
+                        && (byte)(sub.Key.Sequence & maskPattern) == patternToMatch)
                     {
                         SubinstructionDictionary[sub.Key] = implemented.Function;
                     }
