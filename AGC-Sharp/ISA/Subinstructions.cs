@@ -62,6 +62,75 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RSTRT, WS, WB }));
         }
 
+        public static void LXCH0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RL, WB }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RG, WL }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RB, WSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
+        }
+
+        public static void NDX0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { TRSM }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RG, WB }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS }));
+            cpu.ControlPulseQueue.Enqueue((9, new List<ControlPulseFunc>() { RB, WG }));
+            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { ST1 }));
+        }
+
+        public static void NDX1(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RZ, WY12, CI }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG, NISQ }));
+            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RB, WZ }));
+            cpu.ControlPulseQueue.Enqueue((4, new List<ControlPulseFunc>() { RA, WB }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RZ, WA }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RG, WY, A2X }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RU, WS }));
+            cpu.ControlPulseQueue.Enqueue((9, new List<ControlPulseFunc>() { RB, WA }));
+            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RU, WB }));
+        }
+
+        public static void QXCH0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RQ, WB }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RG, WQ }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RB, WSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
+        }
+
+        public static void STD2(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RZ, WY12, CI }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG, NISQ }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RAD, WB, WS }));
+        }
+
+        public static void TC0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RB, WY12, CI }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG, NISQ }));
+            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RZ, WQ }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RAD, WB, WS }));
+        }
+
+        public static void TCF0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RB, WY12, CI }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG, NISQ }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RAD, WB, WS }));
+        }
+
         public static void TS0(Cpu cpu)
         {
             cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));
@@ -86,51 +155,6 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RG, WA }));
             cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RB, WSC, WG }));
             cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
-        }
-
-        public static void LXCH0(Cpu cpu)
-        {
-            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));
-            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
-            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RL, WB }));
-            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RG, WL }));
-            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RB, WSC, WG }));
-            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
-        }
-
-        public static void QXCH0(Cpu cpu)
-        {
-            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));
-            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
-            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RQ, WB }));
-            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RG, WQ }));
-            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RB, WSC, WG }));
-            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
-        }
-
-        public static void TC0(Cpu cpu)
-        {
-            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RB, WY12, CI }));
-            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG, NISQ }));
-            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RZ, WQ }));
-            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
-            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RAD, WB, WS }));
-        }
-
-        public static void TCF0(Cpu cpu)
-        {
-            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RB, WY12, CI }));
-            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG, NISQ }));
-            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
-            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RAD, WB, WS }));
-        }
-
-        public static void STD2(Cpu cpu)
-        {
-            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RZ, WY12, CI }));
-            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG, NISQ }));
-            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
-            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RAD, WB, WS }));
         }
     }
 }

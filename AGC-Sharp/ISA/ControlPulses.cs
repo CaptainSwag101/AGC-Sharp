@@ -190,6 +190,14 @@ namespace AGC_Sharp.ISA
             }
         }
 
+        public static void TRSM(Cpu cpu)
+        {
+            if (cpu.RegisterS == 17)
+            {
+                ST2(cpu);
+            }
+        }
+
         /// <summary>
         /// Test sign. Copy WL16 to BR1.
         /// </summary>

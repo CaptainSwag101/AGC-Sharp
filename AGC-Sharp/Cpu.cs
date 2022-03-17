@@ -205,6 +205,14 @@ namespace AGC_Sharp
                                     break;
                             }
                             break;
+                        case 2:
+                            switch ((regSQ16_10_Spliced >> 1) & 3)
+                            {
+                                case 1:
+                                    ISA.Subinstructions.LXCH0(this);
+                                    break;
+                            }
+                            break;
                         case 3:
                             ISA.Subinstructions.CA0(this);
                             break;
@@ -215,7 +223,7 @@ namespace AGC_Sharp
                             switch ((regSQ16_10_Spliced >> 1) & 3)
                             {
                                 case 0:
-                                    //ISA.Subinstructions.NDX0(this);
+                                    ISA.Subinstructions.NDX0(this);
                                     break;
                                 case 1:
                                     //ISA.Subinstructions.DXCH0(this);
@@ -235,12 +243,19 @@ namespace AGC_Sharp
                 }
                 else if (RegisterST == 1)
                 {
-                    switch (regSQ16_10_Spliced >> 12)
+                    switch (regSQ16_10_Spliced >> 3)
                     {
                         case 0:
                             ISA.Subinstructions.GOJ1(this);
                             break;
-
+                        case 5:
+                            switch ((regSQ16_10_Spliced >> 1) & 3)
+                            {
+                                case 0:
+                                    ISA.Subinstructions.NDX1(this);
+                                    break;
+                            }
+                            break;
                     }
                 }
                 else //if (RegisterST == 3)
