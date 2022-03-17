@@ -19,6 +19,15 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RB, WA }));
         }
 
+        public static void CS0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RG, WB }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((9, new List<ControlPulseFunc>() { RB, WG }));
+            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RC, WA }));
+        }
+
         public static void CCS0(Cpu cpu)
         {
             cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));

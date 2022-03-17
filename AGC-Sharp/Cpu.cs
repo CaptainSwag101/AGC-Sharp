@@ -209,7 +209,7 @@ namespace AGC_Sharp
                             ISA.Subinstructions.CA0(this);
                             break;
                         case 4:
-                            // TODO
+                            ISA.Subinstructions.CS0(this);
                             break;
                         case 5:
                             switch ((regSQ16_10_Spliced >> 1) & 3)
