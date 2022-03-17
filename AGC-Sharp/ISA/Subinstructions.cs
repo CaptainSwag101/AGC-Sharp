@@ -10,6 +10,16 @@ namespace AGC_Sharp.ISA
 {
     internal static class Subinstructions
     {
+        public static void AD0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RG, WB }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((9, new List<ControlPulseFunc>() { RB, WG }));
+            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RB, WY, A2X }));
+            cpu.ControlPulseQueue.Enqueue((11, new List<ControlPulseFunc>() { RU, WA }));
+        }
+
         public static void CA0(Cpu cpu)
         {
             cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));

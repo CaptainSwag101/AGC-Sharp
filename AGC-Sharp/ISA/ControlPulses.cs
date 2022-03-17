@@ -8,6 +8,11 @@ namespace AGC_Sharp.ISA
 {
     internal static class ControlPulses
     {
+        public static void A2X(Cpu cpu)
+        {
+            cpu.AdderX = cpu.RegisterA;
+        }
+
         public static void CI(Cpu cpu)
         {
             cpu.AdderCarry = true;

@@ -228,6 +228,9 @@ namespace AGC_Sharp
                                     break;
                             }
                             break;
+                        case 6:
+                            ISA.Subinstructions.AD0(this);
+                            break;
                     }
                 }
                 else if (RegisterST == 1)
