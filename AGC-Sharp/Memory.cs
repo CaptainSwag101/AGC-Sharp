@@ -88,7 +88,7 @@ namespace AGC_Sharp
                 if (address >= 0x400 && address <= 0x7FF)   // Bankable fixed memory
                 {
                     address &= 0x07FF;
-                    address |= (ushort)((cpu.RegisterFB & 0x7C00) << 2);
+                    address |= (ushort)((cpu.RegisterFB & 0x7C00));
                     return ReadFixed(address);
                 }
                 else
