@@ -194,7 +194,7 @@ namespace AGC_Sharp.ISA
         public static void STD2(Cpu cpu)
         {
             // Include a debug message when we are executing STD2 while not in stage 2
-            if (cpu.RegisterST != 2)
+            if (cpu.RegisterST != 2 || cpu.Extend)
                 Console.WriteLine($"Unimplemented instruction at {cpu.RegisterZ - 1}");
 
             cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RZ, WY12, CI }));

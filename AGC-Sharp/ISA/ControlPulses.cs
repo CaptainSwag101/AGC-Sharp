@@ -53,7 +53,7 @@ namespace AGC_Sharp.ISA
                     ST2(cpu);
                     break;
                 case 6:
-                    cpu.Extend = true;
+                    cpu.Extend_Next = true;
                     RZ(cpu);
                     ST2(cpu);
                     break;
