@@ -189,97 +189,9 @@ namespace AGC_Sharp
 
         private void PrepNextSubinstruction()
         {
-            // This function is going to be a mess. I could make a bit flag table but there would be so many redundant entries.
             byte regSQ16_10_Spliced = (byte)(DoubleSignBitDelete(RegisterSQ, true) >> 9); // Use only bits 16,14-10
 
-            if (RegisterST == 2)
-            {
-                ISA.Subinstructions.STD2(this);
-            }
-            else if (Extend == false)
-            {
-                if (RegisterST == 0)
-                {
-                    switch (regSQ16_10_Spliced >> 3)
-                    {
-                        case 0:
-                            ISA.Subinstructions.TC0(this);
-                            break;
-                        case 1:
-                            switch ((regSQ16_10_Spliced >> 1) & 3)
-                            {
-                                case 0:
-                                    ISA.Subinstructions.CCS0(this);
-                                    break;
-                                case 1:
-                                case 2:
-                                case 3:
-                                    ISA.Subinstructions.TCF0(this);
-                                    break;
-                            }
-                            break;
-                        case 2:
-                            switch ((regSQ16_10_Spliced >> 1) & 3)
-                            {
-                                case 1:
-                                    ISA.Subinstructions.LXCH0(this);
-                                    break;
-                            }
-                            break;
-                        case 3:
-                            ISA.Subinstructions.CA0(this);
-                            break;
-                        case 4:
-                            ISA.Subinstructions.CS0(this);
-                            break;
-                        case 5:
-                            switch ((regSQ16_10_Spliced >> 1) & 3)
-                            {
-                                case 0:
-                                    ISA.Subinstructions.NDX0(this);
-                                    break;
-                                case 1:
-                                    //ISA.Subinstructions.DXCH0(this);
-                                    break;
-                                case 2:
-                                    ISA.Subinstructions.TS0(this);
-                                    break;
-                                case 3:
-                                    ISA.Subinstructions.XCH0(this);
-                                    break;
-                            }
-                            break;
-                        case 6:
-                            ISA.Subinstructions.AD0(this);
-                            break;
-                    }
-                }
-                else if (RegisterST == 1)
-                {
-                    switch (regSQ16_10_Spliced >> 3)
-                    {
-                        case 0:
-                            ISA.Subinstructions.GOJ1(this);
-                            break;
-                        case 5:
-                            switch ((regSQ16_10_Spliced >> 1) & 3)
-                            {
-                                case 0:
-                                    ISA.Subinstructions.NDX1(this);
-                                    break;
-                            }
-                            break;
-                    }
-                }
-                else //if (RegisterST == 3)
-                {
-
-                }
-            }
-            else //if (Extend == true)
-            {
-
-            }
+            ISA.SubinstructionHelper.SubinstructionDictionary[(RegisterST, Extend, regSQ16_10_Spliced)].Invoke(this);
         }
 
         private ushort GetBankedErasableAddress()

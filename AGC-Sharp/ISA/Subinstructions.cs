@@ -8,6 +8,83 @@ using static AGC_Sharp.ISA.ControlPulses;
 
 namespace AGC_Sharp.ISA
 {
+    internal delegate void SubinstructionFunc(Cpu cpu);
+
+    internal static class SubinstructionHelper
+    {
+        public static Dictionary<(byte Stage, bool Extend, byte Sequence), SubinstructionFunc> SubinstructionDictionary = new();
+
+        private static List<(int Stage, bool Extend, string Sequence, SubinstructionFunc Function)> ImplementedSubinstructions = new()
+        {
+            (3, false, "xxxxxxx", Subinstructions.STD2),
+            (3, true, "xxxxxxx", Subinstructions.STD2),
+            (2, false, "xxxxxxx", Subinstructions.STD2),
+            (2, true, "xxxxxxx", Subinstructions.STD2),
+            (1, false, "xxxxxxx", Subinstructions.STD2),
+            (1, true, "xxxxxxx", Subinstructions.STD2),
+            (0, false, "xxxxxxx", Subinstructions.STD2),
+            (0, true, "xxxxxxx", Subinstructions.STD2),
+            (0, false, "0000xxx", Subinstructions.TC0),
+            (0, false, "000101x", Subinstructions.TCF0),
+            (0, false, "000110x", Subinstructions.TCF0),
+            (0, false, "000111x", Subinstructions.TCF0),
+        };
+
+        public static void PopulateDictionary()
+        {
+            // First, generate a list of all 7-bit unsigned integers
+            // to create all possible bit permutations we might encounter.
+            byte permutationCount = (byte)Math.Pow(2, 7);
+
+            // Now, for stages 0 through 3, Extend and without, assign STD2 as a placeholder
+            // so we always attempt to skip ahead to the next instruction if
+            // the current one isn't implemented.
+            for (int extendState = 0; extendState <= 1; ++extendState)
+            {
+                for (byte stage = 0; stage <= 3; ++stage)
+                {
+                    for (byte i = 0; i < permutationCount; ++i)
+                    {
+                        SubinstructionDictionary.Add((stage, (extendState == 1), i), Subinstructions.STD2);
+                    }
+                }
+            }
+
+            // Now that we have a fully-populated dictionary, replace any
+            // implemented subinstructions in the dictionary.
+            foreach (var implemented in ImplementedSubinstructions)
+            {
+                // Generate a bit mask from the sequence string
+                byte skippableBits = 0;
+                byte patternToMatch = 0;
+                for (byte i = 0; i < 7; ++i)
+                {
+                    char c = implemented.Sequence[i];
+
+                    if (c == 'x')
+                    {
+                        ++skippableBits;
+                    }
+                    else if (c == '1')
+                    {
+                        patternToMatch |= (byte)(1 << i);
+                    }
+                }
+
+                foreach (var sub in SubinstructionDictionary)
+                {
+                    // If the key matches, replace its instruction function with the proper one
+                    if (sub.Key.Stage == implemented.Stage
+                        && sub.Key.Extend == implemented.Extend
+                        && (byte)(sub.Key.Sequence >> skippableBits) == patternToMatch)
+                    {
+                        SubinstructionDictionary[sub.Key] = implemented.Function;
+                    }
+                }
+            }
+        }
+    }
+
     internal static class Subinstructions
     {
         public static void AD0(Cpu cpu)

@@ -13,8 +13,10 @@ namespace AGC_Sharp
             Cpu cpu = new();
             Memory memory = new(Memory.MemoryInitState.Random);
 
-            memory.WriteErasableBlock(new ushort[1], 2046);
+            // Generate bitfield permutations for all implemented subinstructions
+            ISA.SubinstructionHelper.PopulateDictionary();
 
+            // Load core rope into fixed memory
             List<ushort> retread50 = new();
             BinaryReader binReader = new(new FileStream("Retread50.bin", FileMode.Open, FileAccess.Read, FileShare.Read));
             while (binReader.BaseStream.Position < binReader.BaseStream.Length)
@@ -32,6 +34,7 @@ namespace AGC_Sharp
             Stopwatch systemClock = new();
             systemClock.Start();
 
+            // Main execution loop
             while (true)
             {
                 if (systemClock.Elapsed.TotalSeconds >= (1 / CLOCK_FREQUENCY))
