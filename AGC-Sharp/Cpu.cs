@@ -60,6 +60,7 @@ namespace AGC_Sharp
         public bool NextInstruction { get; set; }   // Flagged by NISQ control pulse
         public bool InhibitInterrupts { get; set; }
         public bool Extend { get; set; }
+        public bool Extend_Next { get; set; }
         public ushort WriteBus { get; set; }
         public ulong NightWatchman { get; set; }
         #endregion
@@ -86,6 +87,17 @@ namespace AGC_Sharp
         /// </summary>
         public void Tick(Memory memory)
         {
+            // Before pulse 1, do INKBT1
+            if (ControlPulseCount == 1)
+            {
+                // TODO: Add INKL handling once we implement I/O!
+                if (RegisterST != 2)
+                {
+                    NextInstruction = false;
+                    Extend_Next = false;
+                }
+            }
+
             // If there are control pulses left to be performed, perform them if it's the proper pulse number
             if (ControlPulseQueue.Count > 0)
             {
@@ -161,11 +173,12 @@ namespace AGC_Sharp
                 RegisterST_Next = 0;
 
                 if (NextInstruction)
+                {
                     RegisterSQ = (ushort)(RegisterB & 0xBE00);  // Copy bits 16,14-10
+                    Extend = Extend_Next;
+                }
 
                 PrepNextSubinstruction();
-                NextInstruction = false;
-                Extend = false;
             }
 
             // Because writes to the write bus use binary OR,
