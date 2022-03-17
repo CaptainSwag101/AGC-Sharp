@@ -16,19 +16,20 @@ namespace AGC_Sharp.ISA
 
         private static List<(int Stage, bool Extend, string Sequence, SubinstructionFunc Function)> ImplementedSubinstructions = new()
         {
-            (2, false, "xxxxxxx", Subinstructions.STD2),
-            (2, true, "xxxxxxx", Subinstructions.STD2),
-            (0, false, "0000xxx", Subinstructions.TC0),
-            (0, false, "000101x", Subinstructions.TCF0),
-            (0, false, "000110x", Subinstructions.TCF0),
-            (0, false, "000111x", Subinstructions.TCF0),
+            (2, false, "xxxxxx", Subinstructions.STD2),
+            (2, true, "xxxxxx", Subinstructions.STD2),
+            (0, false, "000xxx", Subinstructions.TC0),
+            (0, false, "00101x", Subinstructions.TCF0),
+            (0, false, "00110x", Subinstructions.TCF0),
+            (0, false, "00111x", Subinstructions.TCF0),
+            (0, false, "00100x", Subinstructions.TCF0),
         };
 
         public static void PopulateDictionary()
         {
             // First, generate a list of all 7-bit unsigned integers
             // to create all possible bit permutations we might encounter.
-            byte permutationCount = (byte)Math.Pow(2, 7);
+            byte permutationCount = (byte)Math.Pow(2, 6);
 
             // Now, for stages 0 through 3, Extend and without, assign STD2 as a placeholder
             // so we always attempt to skip ahead to the next instruction if
@@ -51,7 +52,7 @@ namespace AGC_Sharp.ISA
                 // Generate a bit mask from the sequence string
                 byte skippableBits = 0;
                 byte patternToMatch = 0;
-                for (byte i = 0; i < 7; ++i)
+                for (byte i = 0; i < 6; ++i)
                 {
                     char c = implemented.Sequence[i];
 
