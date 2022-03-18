@@ -277,6 +277,11 @@ namespace AGC_Sharp.ISA
             cpu.RegisterL = cpu.WriteBus;
         }
 
+        public static void WOVR(Cpu cpu)
+        {
+            // Ignoring the crap out of this one for now
+        }
+
         public static void WS(Cpu cpu)
         {
             cpu.RegisterS = (ushort)(cpu.WriteBus & 0x0FFF);

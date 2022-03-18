@@ -40,6 +40,7 @@ namespace AGC_Sharp.ISA
             (1, false, "10100x", Subinstructions.NDX1),
             (0, false, "110xxx", Subinstructions.AD0),
             (0, false, "01011x", Subinstructions.ADS0),
+            (0, false, "01010x", Subinstructions.INCR0),
             (1, false, "000xxx", Subinstructions.GOJ1),
             (0, true,  "000011", Subinstructions.WAND0),
             (0, true,  "000101", Subinstructions.WOR0),
@@ -230,6 +231,16 @@ namespace AGC_Sharp.ISA
         {
             cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
             cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RSTRT, WS, WB }));
+        }
+
+        public static void INCR0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RG, WY, TSGN, TMZ, TPZG }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { PONEX }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RU, WSC, WG, WOVR }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
         }
 
         public static void LXCH0(Cpu cpu)
