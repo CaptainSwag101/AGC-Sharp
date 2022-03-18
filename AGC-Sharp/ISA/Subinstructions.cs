@@ -33,6 +33,7 @@ namespace AGC_Sharp.ISA
             (1, false, "10100x", Subinstructions.NDX1),
             (0, false, "110xxx", Subinstructions.AD0),
             (1, false, "000xxx", Subinstructions.GOJ1),
+            (0, true, "000011", Subinstructions.WAND0),
         };
 
         public static void PopulateDictionary()
@@ -194,8 +195,8 @@ namespace AGC_Sharp.ISA
         public static void STD2(Cpu cpu)
         {
             // Include a debug message when we are executing STD2 while not in stage 2
-            if (cpu.RegisterST != 2 || cpu.Extend)
-                Console.WriteLine($"Unimplemented instruction at {cpu.RegisterZ - 1}");
+            if (cpu.RegisterST != 2)
+                Console.WriteLine($"Unimplemented instruction at 0o{Convert.ToString(cpu.RegisterZ - 1, 8)}");
 
             cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RZ, WY12, CI }));
             cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG, NISQ }));
@@ -233,6 +234,18 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { R1C, WA }));
             cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
             cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RB, WSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
+        }
+
+        public static void WAND0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RA, WB }));
+            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RC, WY }));
+            cpu.ControlPulseQueue.Enqueue((4, new List<ControlPulseFunc>() { RCH, WB }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RC, RU, WA }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RA, WB }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RC, WA, WCH }));
             cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
         }
 

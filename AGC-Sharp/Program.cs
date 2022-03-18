@@ -11,7 +11,7 @@ namespace AGC_Sharp
         {
             // Initialize our CPU and Memory
             Cpu cpu = new();
-            Memory memory = new(Memory.MemoryInitState.Random);
+            Memory memory = new(Memory.MemoryInitState.BitsClear);
 
             // Generate bitfield permutations for all implemented subinstructions
             ISA.SubinstructionHelper.PopulateDictionary();

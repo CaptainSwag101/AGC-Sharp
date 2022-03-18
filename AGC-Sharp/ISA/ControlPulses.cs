@@ -88,6 +88,22 @@ namespace AGC_Sharp.ISA
             cpu.WriteBus |= (ushort)(cpu.RegisterB ^ 0xFFFF);
         }
 
+        public static void RCH(Cpu cpu)
+        {
+            if (cpu.RegisterS == 1)
+            {
+                RL(cpu);
+            }
+            else if (cpu.RegisterS == 2)
+            {
+                RQ(cpu);
+            }
+            else
+            {
+                cpu.WriteBus |= Helpers.Bit16To15(cpu.IOChannels[(byte)(cpu.RegisterS & 0x3F)], false);
+            }
+        }
+
         public static void RG(Cpu cpu)
         {
             cpu.WriteBus |= cpu.RegisterG;
@@ -95,7 +111,7 @@ namespace AGC_Sharp.ISA
 
         public static void RL(Cpu cpu)
         {
-            cpu.WriteBus |= cpu.RegisterL;
+            cpu.WriteBus |= Helpers.Bit16To15(cpu.RegisterL, false);
         }
 
         public static void RL10BB(Cpu cpu)
@@ -226,6 +242,22 @@ namespace AGC_Sharp.ISA
         public static void WB(Cpu cpu)
         {
             cpu.RegisterB = cpu.WriteBus;
+        }
+
+        public static void WCH(Cpu cpu)
+        {
+            if (cpu.RegisterS == 1)
+            {
+                WL(cpu);
+            }
+            else if (cpu.RegisterS == 2)
+            {
+                WQ(cpu);
+            }
+            else
+            {
+                cpu.IOChannels[(byte)(cpu.RegisterS & 0x3F)] = Helpers.Bit16To15(cpu.WriteBus, false);  // TODO: Maybe this should be 'true'
+            }
         }
 
         public static void WG(Cpu cpu)

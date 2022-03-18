@@ -61,6 +61,28 @@ namespace AGC_Sharp
             }
         }
 
+        public static ushort GetErasableAddress(ushort address, Cpu cpu)
+        {
+            if (address >= 0x300 && address <= 0x3FF)   // Banked erasable memory
+            {
+                address &= 0x00FF;
+                address |= (ushort)(cpu.RegisterEB & 0x0700);
+            }
+
+            return address;
+        }
+
+        public static ushort GetFixedAddress(ushort address, Cpu cpu)
+        {
+            if (address >= 0x400 && address <= 0x7FF)   // Bankable fixed memory
+            {
+                address &= 0x07FF;
+                address |= (ushort)(cpu.RegisterFB & 0x7C00);
+            }
+
+            return address;
+        }
+
         public ushort ReadWord(ushort address, Cpu cpu)
         {
             // Sanity check
@@ -72,29 +94,11 @@ namespace AGC_Sharp
 
             if (address < 0x400)    // Erasable memory
             {
-                if (address >= 0x300 && address <= 0x3FF)   // Banked erasable memory
-                {
-                    address &= 0x00FF;
-                    address |= (ushort)(cpu.RegisterEB & 0x0F00);
-                    return ReadErasable(address);
-                }
-                else
-                {
-                    return ReadErasable(address);
-                }
+                return ReadErasable(GetErasableAddress(address, cpu));
             }
             else                    // Fixed memory
             {
-                if (address >= 0x400 && address <= 0x7FF)   // Bankable fixed memory
-                {
-                    address &= 0x07FF;
-                    address |= (ushort)((cpu.RegisterFB & 0x7C00));
-                    return ReadFixed(address);
-                }
-                else
-                {
-                    return ReadFixed(address);
-                }
+                return ReadFixed(GetFixedAddress(address, cpu));
             }
         }
 
@@ -110,9 +114,9 @@ namespace AGC_Sharp
             return Fixed[address];
         }
 
-        public void WriteErasableWord(ushort address, ushort value)
+        public void WriteErasableWord(ushort address, ushort value, Cpu cpu)
         {
-            Erasable[address] = value;
+            Erasable[GetErasableAddress(address, cpu)] = value;
         }
 
         /// <summary>

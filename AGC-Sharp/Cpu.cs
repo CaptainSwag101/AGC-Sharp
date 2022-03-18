@@ -31,11 +31,11 @@ namespace AGC_Sharp
         {
             get
             {
-                return DoubleSignBitCreate(_registerFB);
+                return Helpers.Bit15To16(_registerFB);
             }
             set
             {
-                _registerFB = DoubleSignBitDelete(value, true);
+                _registerFB = Helpers.Bit16To15(value, true);
             }
         }
         public ushort RegisterBB
@@ -51,6 +51,10 @@ namespace AGC_Sharp
                 _registerFB &= 0x7C00;
             }
         }
+        #endregion
+
+        #region I/O
+        public Dictionary<byte, ushort> IOChannels { get; set; }
         #endregion
 
         #region Internal Data
@@ -78,6 +82,10 @@ namespace AGC_Sharp
             ControlPulseQueue = new();
             ControlPulseCount = 1;
             NightWatchman = 0;
+
+            // Init the first two I/O channels so we can pass self-tests
+            IOChannels = new();
+            IOChannels.Add(9, 0);
         }
 
         /// <summary>
@@ -144,7 +152,7 @@ namespace AGC_Sharp
                 {
                     if (RegisterS >= 8)  // Anything less than octal 10 is a register, only read actual memory
                     {
-                        RegisterS_Temp = GetBankedErasableAddress(); // Preserve the state of S in case it's changed before our writeback
+                        RegisterS_Temp = RegisterS; // Preserve the state of S in case it's changed before our writeback
                         RegisterG = memory.ReadWord(RegisterS, this);
                     }
                 }
@@ -153,14 +161,14 @@ namespace AGC_Sharp
                     RegisterG = memory.ReadWord(RegisterS, this);
                 }
 
-                RegisterG = DoubleSignBitDelete(RegisterG, false);
+                RegisterG = Helpers.Bit16To15(RegisterG, false);
             }
 
             // Only perform writeback if we performed an erasable read earlier
             if (ControlPulseCount == 9 && RegisterS_Temp > 0)
             {
                 // TODO: Theoretically we should be re-computing the parity bit because it is discarded when loading into G
-                memory.WriteErasableWord(RegisterS_Temp, RegisterG);    // This is the only place we ever write to erasable memory!
+                memory.WriteErasableWord(RegisterS_Temp, RegisterG, this);  // This is the only place we ever write to erasable memory!
                 RegisterS_Temp = 0;
             }
 
@@ -189,29 +197,9 @@ namespace AGC_Sharp
 
         private void PrepNextSubinstruction()
         {
-            byte regSQ16_10_Spliced = (byte)(DoubleSignBitDelete(RegisterSQ, true) >> 9); // Use only bits 16,14-10
+            byte regSQ16_10_Spliced = (byte)(Helpers.Bit16To15(RegisterSQ, true) >> 9); // Use only bits 16,14-10
 
             ISA.SubinstructionHelper.SubinstructionDictionary[(RegisterST, Extend, regSQ16_10_Spliced)].Invoke(this);
-        }
-
-        private ushort GetBankedErasableAddress()
-        {
-            return (ushort)((RegisterS & 0xFF) | (RegisterEB & 0x700));
-        }
-
-        private ushort DoubleSignBitCreate(ushort inVal)
-        {
-            inVal &= 0b0111111111111111;    // Mask out bit 16 just in case
-            inVal |= (ushort)((inVal << 1) & 0b1000000000000000);   // Copy bit 15 into bit 16
-            return inVal;
-        }
-
-        private ushort DoubleSignBitDelete(ushort inVal, bool maskBit16)
-        {
-            inVal &= 0b1011111111111111;    // Mask out the parity bit
-            inVal |= (ushort)((inVal >> 1) & 0b0100000000000000);   // Copy the sign bit into bit 15
-            if (maskBit16) inVal &= 0b0111111111111111;    // Mask out the old bit 16
-            return inVal;
         }
     }
 }
