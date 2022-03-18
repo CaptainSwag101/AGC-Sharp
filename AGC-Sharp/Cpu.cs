@@ -31,11 +31,11 @@ namespace AGC_Sharp
         {
             get
             {
-                return Helpers.Bit15To16(_registerFB);
+                return _registerFB;
             }
             set
             {
-                _registerFB = Helpers.Bit16To15(value, true);
+                _registerFB = (ushort)(Helpers.Bit16To15(value, true) & (0x1F << 10));
             }
         }
         public ushort RegisterBB
