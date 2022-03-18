@@ -22,6 +22,9 @@ namespace AGC_Sharp.ISA
             (0, false, "00101x", Subinstructions.TCF0),
             (0, false, "00110x", Subinstructions.TCF0),
             (0, false, "00111x", Subinstructions.TCF0),
+            (0, true,  "00101x", Subinstructions.BZF0),
+            (0, true,  "00110x", Subinstructions.BZF0),
+            (0, true,  "00111x", Subinstructions.BZF0),
             (0, false, "00100x", Subinstructions.CCS0),
             (0, false, "011xxx", Subinstructions.CA0),
             (0, false, "100xxx", Subinstructions.CS0),
@@ -33,8 +36,8 @@ namespace AGC_Sharp.ISA
             (1, false, "10100x", Subinstructions.NDX1),
             (0, false, "110xxx", Subinstructions.AD0),
             (1, false, "000xxx", Subinstructions.GOJ1),
-            (0, true, "000011", Subinstructions.WAND0),
-            (0, true, "000101", Subinstructions.WOR0),
+            (0, true,  "000011", Subinstructions.WAND0),
+            (0, true,  "000101", Subinstructions.WOR0),
             (0, false, "10101x", Subinstructions.DXCH0),
             (1, false, "10101x", Subinstructions.DXCH1),
         };
@@ -107,6 +110,25 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((9, new List<ControlPulseFunc>() { RB, WG }));
             cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RB, WY, A2X }));
             cpu.ControlPulseQueue.Enqueue((11, new List<ControlPulseFunc>() { RU, WA }));
+        }
+
+        public static void BZF0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RA, WG, TSGN, TMZ }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { TPZG }));
+            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() {  }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RB, WY12, CI }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() {  }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RB, WY12, CI }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() {  }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() {  }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WZ }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RAD, WB, WS, NISQ }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RAD, WB, WS, NISQ }));
         }
 
         public static void CA0(Cpu cpu)
@@ -219,10 +241,11 @@ namespace AGC_Sharp.ISA
         public static void STD2(Cpu cpu)
         {
             // Include a debug message when we are executing STD2 while not in stage 2
+            // to help debug unimplemented instructions.
             if (cpu.RegisterST != 2)
                 Console.WriteLine($"Unimplemented instruction " +
                     $"0o{Convert.ToString(cpu.RegisterB, 8)} (Extend == {cpu.Extend}, Stage = {cpu.RegisterST}) " +
-                    $"at 0o{Convert.ToString(cpu.RegisterZ - 1, 8)}");
+                    $"at {Convert.ToString(cpu.RegisterFB >> 10, 8)},{Convert.ToString(cpu.RegisterZ - 1, 8)}");
 
             cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RZ, WY12, CI }));
             cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG, NISQ }));
