@@ -39,6 +39,7 @@ namespace AGC_Sharp.ISA
             (0, false, "10100x", Subinstructions.NDX0),
             (1, false, "10100x", Subinstructions.NDX1),
             (0, false, "110xxx", Subinstructions.AD0),
+            (0, false, "01011x", Subinstructions.ADS0),
             (1, false, "000xxx", Subinstructions.GOJ1),
             (0, true,  "000011", Subinstructions.WAND0),
             (0, true,  "000101", Subinstructions.WOR0),
@@ -116,6 +117,20 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((11, new List<ControlPulseFunc>() { RU, WA }));
         }
 
+        public static void ADS0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RL10BB, WS }));
+            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RG, WY, A2X }));
+            cpu.ControlPulseQueue.Enqueue((6, new List<ControlPulseFunc>() { RU, WSC, WG, TOV }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { WA }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { WA, RB1 }));
+            cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { WA, R1C }));
+            cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((9, new List<ControlPulseFunc>() { RC, TMZ }));
+            cpu.ControlPulseQueue.Enqueue((11, new List<ControlPulseFunc>() { RU, WA }));
+        }
+
         public static void BZF0(Cpu cpu)
         {
             cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RA, WG, TSGN, TMZ }));
@@ -139,7 +154,7 @@ namespace AGC_Sharp.ISA
         {
             cpu.ControlPulseQueue.Enqueue((1, new List<ControlPulseFunc>() { RA, WG, TSGN, TMZ }));
             cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { TPZG }));
-            cpu.ControlPulseQueue.Enqueue((2, new List<ControlPulseFunc>() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((3, new List<ControlPulseFunc>() { RSC, WG }));
             cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() {  }));
             cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RB, WY12, CI }));
             cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RB, WY12, CI }));
