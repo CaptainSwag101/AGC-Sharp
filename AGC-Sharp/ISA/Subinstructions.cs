@@ -199,10 +199,10 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RZ, WY12, PONEX, PTWOX }));
             cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RU, WZ, WS }));
             cpu.ControlPulseQueue.Enqueue((9, new List<ControlPulseFunc>() { RB, WG }));
-            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RB, WY, MONEX, CI, ST2 }));
-            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RB, WY, ST2 }));
-            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RC, WY, MONEX, CI, ST2 }));
-            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RB, WY, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { WY, RB, MONEX, CI, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { WY, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { WY, RC, MONEX, CI, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { WY, ST2 }));
             cpu.ControlPulseQueue.Enqueue((11, new List<ControlPulseFunc>() { RU, WA }));
         }
 
