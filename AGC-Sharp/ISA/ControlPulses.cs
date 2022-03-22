@@ -221,7 +221,8 @@ namespace AGC_Sharp.ISA
         public static void TSGN(Cpu cpu)
         {
             // Copy bit 16 of the write bus into BR bit 1, and implicitly preserve BR bit 2
-            cpu.RegisterBR &= (byte)((cpu.WriteBus >> 15) | 2);
+            cpu.RegisterBR &= 2;    // Mask out original bit 1
+            cpu.RegisterBR |= (byte)(cpu.WriteBus >> 15);
         }
 
         /// <summary>
@@ -231,7 +232,8 @@ namespace AGC_Sharp.ISA
         public static void TSGN2(Cpu cpu)
         {
             // Copy bit 16 of the write bus into BR bit 2, and implicitly preserve BR bit 1
-            cpu.RegisterBR &= (byte)((cpu.WriteBus >> 14) | 1);
+            cpu.RegisterBR &= 1;    // Mask out original bit 2
+            cpu.RegisterBR |= (byte)((cpu.WriteBus >> 15) << 1);
         }
 
         public static void WA(Cpu cpu)
