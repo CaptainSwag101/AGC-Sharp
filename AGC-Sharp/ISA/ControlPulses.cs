@@ -264,7 +264,24 @@ namespace AGC_Sharp.ISA
         {
             if (cpu.RegisterS >= 0x10 && cpu.RegisterS <= 0x13)
             {
-                // TODO: Special case, used for bit shifts and the like
+                switch (cpu.RegisterS)
+                {
+                    case 0x10:  // Cycle Right
+                        ushort bottomToTop = (ushort)(cpu.WriteBus << 15);  // Cycle the least significant bit to the most
+                        cpu.RegisterG = (ushort)((cpu.WriteBus >> 1) | bottomToTop);
+                        break;
+                    case 0x11:  // Shift Right
+                        ushort topBit = (ushort)(cpu.WriteBus & 0b1000000000000000);
+                        cpu.RegisterG = (ushort)((cpu.WriteBus >> 2) | topBit);  // Shift right, preserving top bit
+                        break;
+                    case 0x12:
+                        ushort topToBottom = (ushort)((cpu.WriteBus & 1) >> 15);  // Cycle the most significant bit to the least
+                        cpu.RegisterG = (ushort)((cpu.WriteBus << 1) | topToBottom);
+                        break;
+                    case 0x13:  // EDOP
+                        cpu.RegisterG = (ushort)((cpu.WriteBus & 0b0011111110000000) >> 7);
+                        break;
+                }
             }
             else
             {
