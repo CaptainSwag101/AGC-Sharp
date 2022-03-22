@@ -12,40 +12,40 @@ namespace AGC_Sharp.ISA
 
     internal static class SubinstructionHelper
     {
-        public static Dictionary<(byte Stage, bool Extend, byte Sequence), SubinstructionFunc> SubinstructionDictionary = new();
+        public static Dictionary<(byte Stage, bool Extend, byte Sequence), (string Name, SubinstructionFunc Func)> SubinstructionDictionary = new();
 
-        private static List<(int Stage, bool Extend, string Sequence, SubinstructionFunc Function)> ImplementedSubinstructions = new()
+        private static List<(int Stage, bool Extend, string Sequence, string Name, SubinstructionFunc Function)> ImplementedSubinstructions = new()
         {
-            (2, false, "xxxxxx", Subinstructions.STD2),
-            (2, true,  "xxxxxx", Subinstructions.STD2),
-            (0, false, "000xxx", Subinstructions.TC0),
-            (0, false, "00101x", Subinstructions.TCF0),
-            (0, false, "00110x", Subinstructions.TCF0),
-            (0, false, "00111x", Subinstructions.TCF0),
-            (0, true,  "00101x", Subinstructions.BZF0),
-            (0, true,  "00110x", Subinstructions.BZF0),
-            (0, true,  "00111x", Subinstructions.BZF0),
-            (0, true,  "11001x", Subinstructions.BZMF0),
-            (0, true,  "11010x", Subinstructions.BZMF0),
-            (0, true,  "11011x", Subinstructions.BZMF0),
-            (0, false, "111xxx", Subinstructions.MSK0),
-            (0, false, "00100x", Subinstructions.CCS0),
-            (0, false, "011xxx", Subinstructions.CA0),
-            (0, false, "100xxx", Subinstructions.CS0),
-            (0, false, "10110x", Subinstructions.TS0),
-            (0, false, "10111x", Subinstructions.XCH0),
-            (0, false, "01001x", Subinstructions.LXCH0),
-            (0, true,  "01001x", Subinstructions.QXCH0),
-            (0, false, "10100x", Subinstructions.NDX0),
-            (1, false, "10100x", Subinstructions.NDX1),
-            (0, false, "110xxx", Subinstructions.AD0),
-            (0, false, "01011x", Subinstructions.ADS0),
-            (0, false, "01010x", Subinstructions.INCR0),
-            (1, false, "000xxx", Subinstructions.GOJ1),
-            (0, true,  "000011", Subinstructions.WAND0),
-            (0, true,  "000101", Subinstructions.WOR0),
-            (0, false, "10101x", Subinstructions.DXCH0),
-            (1, false, "10101x", Subinstructions.DXCH1),
+            (2, false, "xxxxxx", "STD2", Subinstructions.STD2),
+            (2, true,  "xxxxxx", "STD2", Subinstructions.STD2),
+            (0, false, "000xxx", "TC0", Subinstructions.TC0),
+            (0, false, "00101x", "TCF0", Subinstructions.TCF0),
+            (0, false, "00110x", "TCF0", Subinstructions.TCF0),
+            (0, false, "00111x", "TCF0", Subinstructions.TCF0),
+            (0, true,  "00101x", "BZF0", Subinstructions.BZF0),
+            (0, true,  "00110x", "BZF0", Subinstructions.BZF0),
+            (0, true,  "00111x", "BZF0", Subinstructions.BZF0),
+            (0, true,  "11001x", "BZMF0", Subinstructions.BZMF0),
+            (0, true,  "11010x", "BZMF0", Subinstructions.BZMF0),
+            (0, true,  "11011x", "BZMF0", Subinstructions.BZMF0),
+            (0, false, "111xxx", "MSK0", Subinstructions.MSK0),
+            (0, false, "00100x", "CCS0", Subinstructions.CCS0),
+            (0, false, "011xxx", "CA0", Subinstructions.CA0),
+            (0, false, "100xxx", "CS0", Subinstructions.CS0),
+            (0, false, "10110x", "TS0", Subinstructions.TS0),
+            (0, false, "10111x", "XCH0", Subinstructions.XCH0),
+            (0, false, "01001x", "LXCH0", Subinstructions.LXCH0),
+            (0, true,  "01001x", "QXCH0", Subinstructions.QXCH0),
+            (0, false, "10100x", "NDX0", Subinstructions.NDX0),
+            (1, false, "10100x", "NDX1", Subinstructions.NDX1),
+            (0, false, "110xxx", "AD0", Subinstructions.AD0),
+            (0, false, "01011x", "ADS0", Subinstructions.ADS0),
+            (0, false, "01010x", "INCR0", Subinstructions.INCR0),
+            (1, false, "000xxx", "GOJ1", Subinstructions.GOJ1),
+            (0, true,  "000011", "WAND0", Subinstructions.WAND0),
+            (0, true,  "000101", "WOR0", Subinstructions.WOR0),
+            (0, false, "10101x", "DXCH0", Subinstructions.DXCH0),
+            (1, false, "10101x", "DXCH1", Subinstructions.DXCH1),
         };
 
         public static void PopulateDictionary()
@@ -63,7 +63,7 @@ namespace AGC_Sharp.ISA
                 {
                     for (byte i = 0; i < permutationCount; ++i)
                     {
-                        SubinstructionDictionary.Add((stage, (extendState == 1), i), Subinstructions.STD2);
+                        SubinstructionDictionary.Add((stage, (extendState == 1), i), ("STD2", Subinstructions.STD2));
                     }
                 }
             }
@@ -99,7 +99,7 @@ namespace AGC_Sharp.ISA
                         && sub.Key.Extend == implemented.Extend
                         && (byte)(sub.Key.Sequence & maskPattern) == patternToMatch)
                     {
-                        SubinstructionDictionary[sub.Key] = implemented.Function;
+                        SubinstructionDictionary[sub.Key] = (implemented.Name, implemented.Function);
                     }
                 }
             }
