@@ -71,7 +71,7 @@ namespace AGC_Sharp
 
         #region Control Pulse Data
         public Queue<(byte PulseNum, List<ControlPulseFunc> PulseList)> ControlPulseQueue { get; set; }  // Control pulse activation number, function
-        public byte ControlPulseCount { get; private set; }   // Reset upon every new subinstruction
+        private byte controlPulseCount { get; set; }    // Reset upon every new subinstruction
         #endregion
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace AGC_Sharp
         public Cpu()
         {
             ControlPulseQueue = new();
-            ControlPulseCount = 1;
+            controlPulseCount = 1;
             NightWatchman = 0;
 
             // Init the first two I/O channels so we can pass self-tests
@@ -96,7 +96,7 @@ namespace AGC_Sharp
         public void Tick(Memory memory)
         {
             // Before pulse 1, do INKBT1
-            if (ControlPulseCount == 1)
+            if (controlPulseCount == 1)
             {
                 // TODO: Add INKL handling once we implement I/O!
                 if (RegisterST != 2)
@@ -114,7 +114,7 @@ namespace AGC_Sharp
                 List<List<ControlPulseFunc>> branchPulseList = new();
                 foreach (var ctrlPulseEntry in ControlPulseQueue)
                 {
-                    if (ctrlPulseEntry.PulseNum == ControlPulseCount)
+                    if (ctrlPulseEntry.PulseNum == controlPulseCount)
                     {
                         branchPulseList.Add(ctrlPulseEntry.PulseList);
                     }
@@ -145,7 +145,7 @@ namespace AGC_Sharp
             }
 
             // Memory reads are done after pulse 4
-            if (ControlPulseCount == 4)
+            if (controlPulseCount == 4)
             {
                 // Check if the read is for erasable or fixed memory
                 if (RegisterS < 0x400)  // Erasable memory
@@ -168,7 +168,7 @@ namespace AGC_Sharp
             }
 
             // Only perform writeback if we performed an erasable read earlier
-            if (ControlPulseCount == 9 && RegisterS_Temp > 0)
+            if (controlPulseCount == 9 && RegisterS_Temp > 0)
             {
                 // TODO: Theoretically we should be re-computing the parity bit because it is discarded when loading into G
                 memory.WriteErasableWord(RegisterS_Temp, RegisterG, this);  // This is the only place we ever write to erasable memory!
@@ -177,9 +177,9 @@ namespace AGC_Sharp
 
             // After executing pulse 12, reset the control pulse count.
             // Then, perform bookkeeping tasks to prepare to load the next instruction.
-            if (ControlPulseCount == 12)
+            if (controlPulseCount == 12)
             {
-                ControlPulseCount = 0;  // This will be incremented to 1 shortly hereafter
+                controlPulseCount = 0;  // This will be incremented to 1 shortly hereafter
                 RegisterST = RegisterST_Next;
                 RegisterST_Next = 0;
 
@@ -195,7 +195,7 @@ namespace AGC_Sharp
             // Because writes to the write bus use binary OR,
             // we need to zero it out after every time pulse.
             WriteBus = 0;
-            ++ControlPulseCount;
+            ++controlPulseCount;
         }
 
         private void PrepNextSubinstruction()
