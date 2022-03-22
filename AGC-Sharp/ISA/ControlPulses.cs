@@ -168,6 +168,10 @@ namespace AGC_Sharp.ISA
             cpu.RegisterST_Next |= 2;
         }
 
+        /// <summary>
+        /// Test WL1-16 for all ones (-0). Set BR2 if true.
+        /// </summary>
+        /// <param name="cpu"></param>
         public static void TMZ(Cpu cpu)
         {
             if (cpu.WriteBus == 0xFFFF)
@@ -183,13 +187,11 @@ namespace AGC_Sharp.ISA
             switch (overflowTest)
             {
                 case 1: // bits are 01, positive overflow
-                    cpu.RegisterBR = overflowTest;
-                    break;
-                case 2:
-                    cpu.RegisterBR = overflowTest;
+                case 2: // bits are 10, negative overflow
+                    cpu.RegisterBR = (byte)(overflowTest ^ 0b11);
                     break;
                 default:
-                    cpu.RegisterBR = 0;
+                    cpu.RegisterBR = 0b00;
                     break;
             }
         }
@@ -202,7 +204,7 @@ namespace AGC_Sharp.ISA
         {
             if (cpu.RegisterG == 0)
             {
-                cpu.RegisterBR |= 2;
+                cpu.RegisterBR |= 0b10;
             }
         }
 
@@ -221,8 +223,8 @@ namespace AGC_Sharp.ISA
         public static void TSGN(Cpu cpu)
         {
             // Copy bit 16 of the write bus into BR bit 1, and implicitly preserve BR bit 2
-            cpu.RegisterBR &= 2;    // Mask out original bit 1
-            cpu.RegisterBR |= (byte)(cpu.WriteBus >> 15);
+            cpu.RegisterBR &= 0b10; // Mask out original bit 1
+            cpu.RegisterBR |= (byte)(Helpers.Bit15To16(cpu.WriteBus) >> 15);
         }
 
         /// <summary>
@@ -232,7 +234,7 @@ namespace AGC_Sharp.ISA
         public static void TSGN2(Cpu cpu)
         {
             // Copy bit 16 of the write bus into BR bit 2, and implicitly preserve BR bit 1
-            cpu.RegisterBR &= 1;    // Mask out original bit 2
+            cpu.RegisterBR &= 0b01; // Mask out original bit 2
             cpu.RegisterBR |= (byte)((cpu.WriteBus >> 15) << 1);
         }
 
