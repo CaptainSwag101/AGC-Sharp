@@ -260,6 +260,9 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((4, new List<ControlPulseFunc>() { RC, WA }));
             cpu.ControlPulseQueue.Enqueue((7, new List<ControlPulseFunc>() { RG, WB }));
             cpu.ControlPulseQueue.Enqueue((8, new List<ControlPulseFunc>() { RZ, WS, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((9, new List<ControlPulseFunc>() { RC, RA, WY }));
+            cpu.ControlPulseQueue.Enqueue((10, new List<ControlPulseFunc>() { RU, WB }));
+            cpu.ControlPulseQueue.Enqueue((11, new List<ControlPulseFunc>() { RC, WA }));
         }
 
         public static void NDX0(Cpu cpu)
@@ -336,7 +339,6 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((4, new List<ControlPulseFunc>() { RZ, WY12 }));
             cpu.ControlPulseQueue.Enqueue((4, new List<ControlPulseFunc>() { RZ, WY12, CI }));
             cpu.ControlPulseQueue.Enqueue((4, new List<ControlPulseFunc>() { RZ, WY12, CI }));
-            cpu.ControlPulseQueue.Enqueue((4, new List<ControlPulseFunc>() { RZ, WY12 }));
             cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { }));
             cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { RB1, WA }));
             cpu.ControlPulseQueue.Enqueue((5, new List<ControlPulseFunc>() { R1C, WA }));
