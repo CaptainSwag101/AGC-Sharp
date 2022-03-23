@@ -140,18 +140,18 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((1, new() { RA, WG, TSGN, TMZ }));
             cpu.ControlPulseQueue.Enqueue((2, new() { TPZG }));
             cpu.ControlPulseQueue.Enqueue((3, new() { RSC, WG }));
-            cpu.ControlPulseQueue.Enqueue((5, new() {  }));
-            cpu.ControlPulseQueue.Enqueue((5, new() {  }));
-            cpu.ControlPulseQueue.Enqueue((5, new() { RB, WY12, CI }));
-            cpu.ControlPulseQueue.Enqueue((5, new() { RB, WY12, CI }));
-            cpu.ControlPulseQueue.Enqueue((6, new() {  }));
-            cpu.ControlPulseQueue.Enqueue((6, new() {  }));
-            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ }));
-            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ }));
-            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
-            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
-            cpu.ControlPulseQueue.Enqueue((8, new() { RAD, WB, WS, NISQ }));
-            cpu.ControlPulseQueue.Enqueue((8, new() { RAD, WB, WS, NISQ }));
+            cpu.ControlPulseQueue.Enqueue((5, new() {  }));             // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RB, WY12, CI })); // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((5, new() {  }));             // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RB, WY12, CI })); // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((6, new() {  }));         // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((6, new() {  }));         // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));          // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RAD, WB, WS, NISQ }));    // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));          // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RAD, WB, WS, NISQ }));    // BR1 = 0, BR2 = 0
         }
 
         public static void BZMF0(Cpu cpu)
