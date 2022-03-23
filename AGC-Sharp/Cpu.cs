@@ -181,7 +181,7 @@ namespace AGC_Sharp
                     RegisterG = memory.ReadWord(RegisterS, this);
                 }
 
-                RegisterG = Helpers.Bit16To15(RegisterG, false);
+                RegisterG = Helpers.Bit16To15(RegisterG, false);    // TODO: This breaks overflow checking when comparing against registers
 
                 // Print mid-instruction debug info
                 Console.WriteLine($"G updated to {Convert.ToString(RegisterG, 8)}");

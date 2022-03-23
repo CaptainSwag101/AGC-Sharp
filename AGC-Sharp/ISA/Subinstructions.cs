@@ -254,25 +254,6 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((11, new() { RU, WA }));  // BR1 = 1, BR2 = 1
         }
 
-        public static void DCS0(Cpu cpu)
-        {
-            cpu.ControlPulseQueue.Enqueue((1, new() { RB, WY12, MONEX, CI }));
-            cpu.ControlPulseQueue.Enqueue((2, new() { RSC, WG }));
-            cpu.ControlPulseQueue.Enqueue((7, new() { RG, WB }));
-            cpu.ControlPulseQueue.Enqueue((8, new() { RU, WS }));
-            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WG }));
-            cpu.ControlPulseQueue.Enqueue((10, new() { RC, WL, ST1 }));
-        }
-
-        public static void DCS1(Cpu cpu)
-        {
-            cpu.ControlPulseQueue.Enqueue((2, new() { RSC, WG }));
-            cpu.ControlPulseQueue.Enqueue((7, new() { RG, WB }));
-            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
-            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WG }));
-            cpu.ControlPulseQueue.Enqueue((10, new() { RC, WA }));
-        }
-
         public static void DCA0(Cpu cpu)
         {
             cpu.ControlPulseQueue.Enqueue((1, new() { RB, WY12, MONEX, CI }));
@@ -290,6 +271,25 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
             cpu.ControlPulseQueue.Enqueue((9, new() { RB, WG }));
             cpu.ControlPulseQueue.Enqueue((10, new() { RB, WA }));
+        }
+
+        public static void DCS0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { RB, WY12, MONEX, CI }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { RG, WB }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RU, WS }));
+            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WG }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { RC, WL, ST1 }));
+        }
+
+        public static void DCS1(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((2, new() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { RG, WB }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WG }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { RC, WA }));
         }
 
         public static void DXCH0(Cpu cpu)
