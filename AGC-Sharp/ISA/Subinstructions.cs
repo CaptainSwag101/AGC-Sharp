@@ -264,7 +264,7 @@ namespace AGC_Sharp.ISA
         {
             cpu.ControlPulseQueue.Enqueue((1, new() { RL10BB, WS }));
             cpu.ControlPulseQueue.Enqueue((2, new() { RSC, WG }));
-            cpu.ControlPulseQueue.Enqueue((3, new() { RSC, WB }));
+            cpu.ControlPulseQueue.Enqueue((3, new() { RA, WB }));
             cpu.ControlPulseQueue.Enqueue((5, new() { RG, WA }));
             cpu.ControlPulseQueue.Enqueue((7, new() { RB, WSC, WG }));
             cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
