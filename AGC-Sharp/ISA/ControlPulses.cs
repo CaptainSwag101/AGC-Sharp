@@ -25,7 +25,7 @@ namespace AGC_Sharp.ISA
 
         public static void MONEX(Cpu cpu)
         {
-            cpu.AdderX |= 0b1111111111111110;   // Set all but bit 1 to 1
+            cpu.AdderX |= 0xFFFE;   // Set all but bit 1 to 1
         }
 
         public static void NISQ(Cpu cpu)
@@ -183,6 +183,10 @@ namespace AGC_Sharp.ISA
             {
                 cpu.RegisterBR2 = true;
             }
+            else
+            {
+                cpu.RegisterBR2 = false;
+            }
         }
 
         /// <summary>
@@ -324,7 +328,7 @@ namespace AGC_Sharp.ISA
             switch (cpu.RegisterS)
             {
                 case 0:
-                    cpu.RegisterA = cpu.WriteBus;
+                    cpu.RegisterA = Helpers.Bit15To16(cpu.WriteBus);
                     break;
                 case 1:
                     cpu.RegisterL = cpu.WriteBus;
