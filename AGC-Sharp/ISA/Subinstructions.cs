@@ -379,9 +379,10 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((4, new() { RZ, WY12, CI }));
             cpu.ControlPulseQueue.Enqueue((4, new() { RZ, WY12, CI }));
             cpu.ControlPulseQueue.Enqueue((4, new() { RZ, WY12 }));
-            cpu.ControlPulseQueue.Enqueue((5, new() { }));  // Should never be hit
+            cpu.ControlPulseQueue.Enqueue((5, new() { }));  // If no overflow
             cpu.ControlPulseQueue.Enqueue((5, new() { R1C, WA }));
             cpu.ControlPulseQueue.Enqueue((5, new() { RB1, WA }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { }));  // If no overflow
             cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ }));
             cpu.ControlPulseQueue.Enqueue((7, new() { RB, WSC, WG }));
             cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));

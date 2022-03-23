@@ -176,7 +176,7 @@ namespace AGC_Sharp.ISA
         {
             if (cpu.WriteBus == 0xFFFF)
             {
-                cpu.RegisterBR |= 2;
+                cpu.RegisterBR2 = true;
             }
         }
 
@@ -186,12 +186,17 @@ namespace AGC_Sharp.ISA
 
             switch (overflowTest)
             {
-                case 1: // bits are 01, positive overflow
-                case 2: // bits are 10, negative overflow
-                    cpu.RegisterBR = (byte)(overflowTest ^ 0b11);
+                case 1: // Bits are 01, positive overflow
+                    cpu.RegisterBR1 = false;
+                    cpu.RegisterBR2 = true;
                     break;
-                default:
-                    cpu.RegisterBR = 0b00;
+                case 2: // Bits are 10, negative overflow
+                    cpu.RegisterBR1 = true;
+                    cpu.RegisterBR2 = false;
+                    break;
+                default:    // No overflow
+                    cpu.RegisterBR1 = false;
+                    cpu.RegisterBR2 = false;
                     break;
             }
         }
@@ -204,7 +209,7 @@ namespace AGC_Sharp.ISA
         {
             if (cpu.RegisterG == 0)
             {
-                cpu.RegisterBR |= 0b10;
+                cpu.RegisterBR2 = true;
             }
         }
 
@@ -222,9 +227,7 @@ namespace AGC_Sharp.ISA
         /// <param name="cpu"></param>
         public static void TSGN(Cpu cpu)
         {
-            // Copy bit 16 of the write bus into BR bit 1, and implicitly preserve BR bit 2
-            cpu.RegisterBR &= 0b10; // Mask out original bit 1
-            cpu.RegisterBR |= (byte)(Helpers.Bit15To16(cpu.WriteBus) >> 15);
+            cpu.RegisterBR1 = ((cpu.WriteBus >> 15) == 1);
         }
 
         /// <summary>
@@ -233,9 +236,7 @@ namespace AGC_Sharp.ISA
         /// <param name="cpu"></param>
         public static void TSGN2(Cpu cpu)
         {
-            // Copy bit 16 of the write bus into BR bit 2, and implicitly preserve BR bit 1
-            cpu.RegisterBR &= 0b01; // Mask out original bit 2
-            cpu.RegisterBR |= (byte)((cpu.WriteBus >> 15) << 1);
+            cpu.RegisterBR2 = ((cpu.WriteBus >> 15) == 1);
         }
 
         public static void WA(Cpu cpu)

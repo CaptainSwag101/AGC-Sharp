@@ -15,7 +15,8 @@ namespace AGC_Sharp
         #region Registers
         public byte RegisterST { get; set; }    // Instruction state
         public byte RegisterST_Next { get; set; } // Next instruction state
-        public byte RegisterBR { get; set; }    // Branch register
+        public bool RegisterBR1 { get; set; }   // Branch register bit 1
+        public bool RegisterBR2 { get; set; }   // Branch register bit 2
         public ushort RegisterS { get; set; }   // Memory address the current instruction is accessing
         public ushort RegisterS_Temp { get; set; } // Flip-flop for temporary storage of S for erasable memory writeback
         public ushort RegisterA { get; set; }   // Accumulator
@@ -130,12 +131,26 @@ namespace AGC_Sharp
                 // by the BR register (between 0 and 3).
                 if (branchPulseList.Count > 1)
                 {
-                    foreach (var pulse in branchPulseList[RegisterBR])
+                    List<ControlPulseFunc>? selectedPulseList = null;
+                    if (RegisterBR1 == false && RegisterBR2 == false)
+                        selectedPulseList = branchPulseList[0];
+                    else if (RegisterBR1 == true && RegisterBR2 == false)
+                        selectedPulseList = branchPulseList[2];
+                    else if (RegisterBR1 == false && RegisterBR2 == true)
+                        selectedPulseList = branchPulseList[1];
+                    else if (RegisterBR1 == true && RegisterBR2 == true)
+                        selectedPulseList = branchPulseList[3];
+
+                    if (selectedPulseList == null) throw new InvalidOperationException("The branch register is in an invalid state.");
+
+                    // Execute the selected pulse list
+                    foreach (var pulse in selectedPulseList)
                     {
                         pulse(this);
                     }
                 }
-                else if (branchPulseList.Count > 0)     // Otherwise just execute the first and only entry.
+                // Otherwise just execute the first and only entry.
+                else if (branchPulseList.Count > 0)
                 {
                     foreach (var pulse in branchPulseList[0])
                     {
@@ -210,7 +225,7 @@ namespace AGC_Sharp
             Console.WriteLine($"{subinstructionName}");
             Console.WriteLine($"Z = {Convert.ToString(RegisterZ, 8)}, A = {Convert.ToString(RegisterA, 8)}, L = {Convert.ToString(RegisterL, 8)}, B = {Convert.ToString(RegisterB, 8)},");
             Console.WriteLine($"S = {Convert.ToString(RegisterS, 8)}, G = {Convert.ToString(RegisterG, 8)}, Q = {Convert.ToString(RegisterQ, 8)}, SQ = {Convert.ToString(RegisterSQ, 8)},");
-            Console.WriteLine($"EB = {Convert.ToString(RegisterEB, 8)}, FB = {Convert.ToString(RegisterFB, 8)}, BB = {Convert.ToString(RegisterBB, 8)}, ST = {Convert.ToString(RegisterST, 8)}, BR = {Convert.ToString(RegisterBR, 8)}");
+            Console.WriteLine($"EB = {Convert.ToString(RegisterEB, 8)}, FB = {Convert.ToString(RegisterFB, 8)}, BB = {Convert.ToString(RegisterBB, 8)}, ST = {Convert.ToString(RegisterST, 8)}, BR1 = {RegisterBR1}, BR2 = {RegisterBR2}");
 
             // Execute subinstruction (queue its control pulses)
             subinstructionFunc(this);
