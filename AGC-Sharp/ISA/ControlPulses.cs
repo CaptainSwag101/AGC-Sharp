@@ -18,6 +18,11 @@ namespace AGC_Sharp.ISA
             cpu.AdderCarry = true;
         }
 
+        public static void INVALID(Cpu cpu)
+        {
+            throw new InvalidOperationException("This control pulse indicates an illogical condition has been reached.");
+        }
+
         public static void MONEX(Cpu cpu)
         {
             cpu.AdderX |= 0b1111111111111110;   // Set all but bit 1 to 1
@@ -180,6 +185,11 @@ namespace AGC_Sharp.ISA
             }
         }
 
+        /// <summary>
+        /// Test for + or - overflow. Set BR1,2 to 00 if no
+        /// overflow, 01 if + overflow, 10 if - overflow.
+        /// </summary>
+        /// <param name="cpu"></param>
         public static void TOV(Cpu cpu)
         {
             byte overflowTest = (byte)(cpu.WriteBus >> 14);

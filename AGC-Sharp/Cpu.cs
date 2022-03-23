@@ -131,6 +131,11 @@ namespace AGC_Sharp
                 // by the BR register (between 0 and 3).
                 if (branchPulseList.Count > 1)
                 {
+                    // Sanity check: Throw if we have more than 4 possible branches,
+                    // it means we screwed up our subinstruction.
+                    if (branchPulseList.Count > 4)
+                        throw new InvalidDataException($"The current subinstruction at timepulse {controlPulseCount} has {branchPulseList.Count} possible branches, which is invalid.");
+
                     List<ControlPulseFunc>? selectedPulseList = null;
                     if (RegisterBR1 == false && RegisterBR2 == false)
                         selectedPulseList = branchPulseList[0];
@@ -141,10 +146,10 @@ namespace AGC_Sharp
                     else if (RegisterBR1 == true && RegisterBR2 == true)
                         selectedPulseList = branchPulseList[3];
 
-                    if (selectedPulseList == null) throw new InvalidOperationException("The branch register is in an invalid state.");
-
-                    // Execute the selected pulse list
-                    foreach (var pulse in selectedPulseList)
+                    // Execute the selected pulse list.
+                    // We have evaluated all possible binary permutations of the BR register,
+                    // So it cannot be null here.
+                    foreach (var pulse in selectedPulseList!)
                     {
                         pulse(this);
                     }
