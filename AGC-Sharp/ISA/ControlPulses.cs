@@ -328,7 +328,7 @@ namespace AGC_Sharp.ISA
             switch (cpu.RegisterS)
             {
                 case 0:
-                    cpu.RegisterA = Helpers.Bit15To16(cpu.WriteBus);
+                    cpu.RegisterA = cpu.WriteBus;
                     break;
                 case 1:
                     cpu.RegisterL = cpu.WriteBus;
