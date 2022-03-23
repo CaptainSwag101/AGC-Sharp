@@ -131,18 +131,30 @@ namespace AGC_Sharp.ISA
 
         public static void RSC(Cpu cpu)
         {
-            ushort val = cpu.RegisterS switch
+            switch (cpu.RegisterS)
             {
-                0 => cpu.RegisterA,
-                1 => cpu.RegisterL,
-                2 => cpu.RegisterQ,
-                3 => cpu.RegisterEB,
-                4 => cpu.RegisterFB,
-                5 => cpu.RegisterZ,
-                6 => cpu.RegisterBB,
-                _ => 0
-            };
-            cpu.WriteBus |= val;
+                case 0:
+                    RA(cpu);
+                    break;
+                case 1:
+                    RL(cpu);
+                    break;
+                case 2:
+                    RQ(cpu);
+                    break;
+                case 3:
+                    cpu.WriteBus |= cpu.RegisterEB;
+                    break;
+                case 4:
+                    cpu.WriteBus |= cpu.RegisterFB;
+                    break;
+                case 5:
+                    RZ(cpu);
+                    break;
+                case 6:
+                    cpu.WriteBus |= cpu.RegisterBB;
+                    break;
+            }
         }
 
         public static void RU(Cpu cpu)
