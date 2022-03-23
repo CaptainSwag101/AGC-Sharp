@@ -234,8 +234,8 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((5, new() { RG, WY, A2X }));
             cpu.ControlPulseQueue.Enqueue((6, new() { RU, WG, WSC, TOV }));
             cpu.ControlPulseQueue.Enqueue((7, new() { WA }));       // BR1 = 0, BR2 = 0
-            cpu.ControlPulseQueue.Enqueue((7, new() { WA, RB1 }));  // BR1 = 0, BR2 = 1
-            cpu.ControlPulseQueue.Enqueue((7, new() { WA, R1C }));  // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((7, new() { RB1, WA }));  // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((7, new() { R1C, WA }));  // BR1 = 1, BR2 = 0
             cpu.ControlPulseQueue.Enqueue((7, new() { WA }));       // BR1 = 1, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
             cpu.ControlPulseQueue.Enqueue((9, new() { RC, TMZ }));
