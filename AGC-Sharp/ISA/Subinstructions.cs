@@ -28,6 +28,7 @@ namespace AGC_Sharp.ISA
             (0, true,  "11001x", "BZMF0", Subinstructions.BZMF0),
             (0, true,  "11010x", "BZMF0", Subinstructions.BZMF0),
             (0, true,  "11011x", "BZMF0", Subinstructions.BZMF0),
+            (0, true,  "01010x", "AUG0", Subinstructions.AUG0),
             (0, true,  "011xxx", "DCA0", Subinstructions.DCA0),
             (1, true,  "011xxx", "DCA1", Subinstructions.DCA1),
             (0, true,  "100xxx", "DCS0", Subinstructions.DCS0),
@@ -138,6 +139,19 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
             cpu.ControlPulseQueue.Enqueue((9, new() { RC, TMZ }));
             cpu.ControlPulseQueue.Enqueue((11, new() { RU, WA }));
+        }
+
+        public static void AUG0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { RL10BB, WS }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WY, TSGN, TMZ, TPZG }));
+            cpu.ControlPulseQueue.Enqueue((6, new() { PONEX }));    // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((6, new() { PONEX }));    // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((6, new() { MONEX }));    // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((6, new() { MONEX }));    // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((7, new() { RU, WSC, WG, WOVR }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
         }
 
         public static void BZF0(Cpu cpu)
@@ -391,7 +405,7 @@ namespace AGC_Sharp.ISA
             // to help debug unimplemented instructions.
             if (cpu.RegisterST != 2)
                 Console.WriteLine($"Unimplemented instruction " +
-                    $"0o{Convert.ToString(cpu.RegisterB, 8)} (Extend == {cpu.Extend}, Stage = {cpu.RegisterST}) " +
+                    $"{Convert.ToString(cpu.RegisterB, 8)} (Extend == {cpu.Extend}, Stage = {cpu.RegisterST}) " +
                     $"at {Convert.ToString(cpu.RegisterZ - 1, 8)}");
 
             cpu.ControlPulseQueue.Enqueue((1, new() { RZ, WY12, CI }));
