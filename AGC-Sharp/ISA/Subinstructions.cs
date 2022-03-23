@@ -56,6 +56,9 @@ namespace AGC_Sharp.ISA
             (0, true,  "000101", "WOR0", Subinstructions.WOR0),
             (0, false, "10101x", "DXCH0", Subinstructions.DXCH0),
             (1, false, "10101x", "DXCH1", Subinstructions.DXCH1),
+            (0, true,  "111xxx", "MP0", Subinstructions.MP0),
+            (1, true,  "111xxx", "MP1", Subinstructions.MP1),
+            (3, true,  "111xxx", "MP3", Subinstructions.MP3),
         };
 
         public static void PopulateDictionary()
@@ -366,6 +369,63 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL }));
             cpu.ControlPulseQueue.Enqueue((7, new() { RB, WSC, WG }));
             cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
+        }
+
+        public static void MP0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((2, new() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((3, new() { RA, WB, TSGN }));
+            cpu.ControlPulseQueue.Enqueue((4, new() { RB, WL }));   // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((4, new() { RB, WL }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((4, new() { RC, WL }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((4, new() { RC, WL }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((7, new() { RG, WB, TSGN2 }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS }));
+            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WY }));       // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WY, CI }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((9, new() { RC, WY, CI }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((9, new() { RC, WY }));       // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((10, new() { RU, WB, TSGN, ST1, NEACON }));
+            cpu.ControlPulseQueue.Enqueue((11, new() { WA }));                  // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() { WA }));                  // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((11, new() { RB1, R1C, WA, L16 }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() { RB1, R1C, WA, L16 }));   // BR1 = 1, BR2 = 1
+        }
+
+        public static void MP1(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { ZIP }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { ZAP }));
+            cpu.ControlPulseQueue.Enqueue((3, new() { ZIP }));
+            cpu.ControlPulseQueue.Enqueue((4, new() { ZAP }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { ZIP }));
+            cpu.ControlPulseQueue.Enqueue((6, new() { ZAP }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { ZIP }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { ZAP }));
+            cpu.ControlPulseQueue.Enqueue((9, new() { ZIP }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { ZAP, ST1, ST2 }));
+            cpu.ControlPulseQueue.Enqueue((11, new() { ZIP }));
+        }
+
+        public static void MP3(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { ZAP }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { ZIP, NISQ }));
+            cpu.ControlPulseQueue.Enqueue((3, new() { ZAP }));
+            cpu.ControlPulseQueue.Enqueue((4, new() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { RZ, WY12, CI }));
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ, TL15, NEACOF }));
+            cpu.ControlPulseQueue.Enqueue((7, new() {  }));             // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((7, new() {  }));             // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((7, new() { RB, WY, A2X }));  // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((7, new() { RB, WY, A2X }));  // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RAD, WB, WS }));
+            cpu.ControlPulseQueue.Enqueue((9, new() { RA }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { RL }));
+            cpu.ControlPulseQueue.Enqueue((11, new() {  }));        // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() {  }));        // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((11, new() { RU, WA }));  // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() { RU, WA }));  // BR1 = 1, BR2 = 1
         }
 
         public static void MSK0(Cpu cpu)

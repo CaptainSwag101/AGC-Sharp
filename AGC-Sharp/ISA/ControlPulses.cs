@@ -18,14 +18,44 @@ namespace AGC_Sharp.ISA
             cpu.AdderCarry = true;
         }
 
+        public static void G2LS(Cpu cpu)
+        {
+            ushort mainBits = (ushort)((cpu.RegisterG & 0x7FFF) >> 3);  // G bits 4-15 to L bits 1-12
+            ushort upperBits = (ushort)(cpu.RegisterG & 0x8000);    // G bit 16 to L bit 16
+            upperBits |= (ushort)((cpu.RegisterG & 1) << 14);       // G bit 1 to L bit 15
+            cpu.RegisterL = (ushort)(mainBits | upperBits);         // All together now
+        }
+
         public static void INVALID(Cpu cpu)
         {
             throw new InvalidOperationException("This control pulse indicates an illogical condition has been reached.");
         }
 
+        public static void L16(Cpu cpu)
+        {
+            cpu.RegisterL |= 0x8000;    // Set bit 16 of L to 1
+        }
+
+        public static void L2GD(Cpu cpu)
+        {
+            cpu.RegisterG = (ushort)((cpu.RegisterL & 0x7FFF) << 1);    // L bits 1-14 into G bits 2-15
+            cpu.RegisterG |= (ushort)(cpu.RegisterL & 0x8000);          // L bit 16 into G bit 16
+            cpu.RegisterG |= (ushort)(cpu.MCRO ? 1 : 0);                // MCRO into G bit 1
+        }
+
         public static void MONEX(Cpu cpu)
         {
             cpu.AdderX |= 0xFFFE;   // Set all but bit 1 to 1
+        }
+
+        public static void NEACOF(Cpu cpu)
+        {
+            cpu.NoEAC = false;
+        }
+
+        public static void NEACON(Cpu cpu)
+        {
+            cpu.NoEAC = true;
         }
 
         public static void NISQ(Cpu cpu)
@@ -157,19 +187,34 @@ namespace AGC_Sharp.ISA
             }
         }
 
+        // Perform one's complement addition, store result in write bus
         public static void RU(Cpu cpu)
         {
-            // Perform one's complement addition, store result in write bus
+            // Basic addition step
             uint temp = (uint)cpu.AdderX + (uint)cpu.AdderY;
-            temp += ((temp >> 16) & 1) | (uint)(cpu.AdderCarry ? 1 : 0);    // Handle end-around-carry and explicit carry bit
+
+            // Handle carries
+            uint carry = (uint)(cpu.AdderCarry ? 1 : 0);  // Explicit carry
+            if (!cpu.NoEAC)
+                carry |= ((temp >> 16) & 1);  // End-around carry if not inhibited
+            temp += carry;
+
+            // Store final result in write bus
             cpu.WriteBus |= (ushort)(temp & ushort.MaxValue);
         }
 
         public static void RUS(Cpu cpu)
         {
-            // Perform one's complement addition, store result in write bus, copying bit 15 into 16
+            // Basic addition step
             uint temp = (uint)cpu.AdderX + (uint)cpu.AdderY;
-            temp += ((temp >> 16) & 1) | (uint)(cpu.AdderCarry ? 1 : 0);    // Handle end-around-carry and explicit carry bit
+
+            // Handle carries
+            uint carry = (uint)(cpu.AdderCarry ? 1 : 0);  // Explicit carry
+            if (!cpu.NoEAC)
+                carry |= ((temp >> 16) & 1);  // End-around carry if not inhibited
+            temp += carry;
+
+            // Store final result in write bus
             cpu.WriteBus |= (ushort)((temp & ushort.MaxValue) | ((temp << 1) & 0x8000));    // OR the 15th bit into the 16th
         }
 
@@ -191,6 +236,11 @@ namespace AGC_Sharp.ISA
         public static void ST2(Cpu cpu)
         {
             cpu.RegisterST_Next |= 2;
+        }
+
+        public static void TL15(Cpu cpu)
+        {
+            cpu.RegisterBR1 = ((cpu.RegisterL & 0x4000) > 0);   // L bit 15 into BR1
         }
 
         /// <summary>
@@ -276,6 +326,23 @@ namespace AGC_Sharp.ISA
         public static void WA(Cpu cpu)
         {
             cpu.RegisterA = cpu.WriteBus;
+        }
+
+        public static void WALS(Cpu cpu)
+        {
+            cpu.RegisterA = (ushort)(cpu.WriteBus >> 2);        // WL bits 3-16 into A bits 1-14
+            cpu.RegisterL = (ushort)((cpu.WriteBus & 3) << 12); // WL bits 1,2 into L bits 13,14
+
+            if ((cpu.RegisterG & 1) == 0)
+            {
+                cpu.RegisterA |= (ushort)(cpu.RegisterG & 0x8000);          // G bit 1 into A bit 16
+                cpu.RegisterA |= (ushort)((cpu.RegisterG & 0x8000) >> 1);   // G bit 1 into A bit 15
+            }
+            else
+            {
+                cpu.RegisterA |= (ushort)(cpu.WriteBus & 0x8000);           // WL bit 1 into A bit 16
+                cpu.RegisterA |= (ushort)((cpu.WriteBus & 0x8000) >> 1);    // WL bit 1 into A bit 15
+            }
         }
 
         public static void WB(Cpu cpu)
@@ -383,6 +450,15 @@ namespace AGC_Sharp.ISA
             cpu.AdderCarry = false;
         }
 
+        public static void WYD(Cpu cpu)
+        {
+            cpu.AdderX = 0;
+            cpu.AdderY = (ushort)((cpu.WriteBus & 0x3FFF) << 1);    // WL bits 1-14 into Y bits 2-15
+            // WL bit 16 into Y bit 16 if circumstances allow
+            if (!cpu.NoEAC && !cpu.ShincSequence && !(cpu.PIFL && (cpu.RegisterL & 0x4000) > 0))
+                cpu.AdderY |= (ushort)(cpu.WriteBus & 0x8000);
+        }
+
         public static void WY12(Cpu cpu)
         {
             cpu.AdderX = 0;
@@ -393,6 +469,73 @@ namespace AGC_Sharp.ISA
         public static void WZ(Cpu cpu)
         {
             cpu.RegisterZ = cpu.WriteBus;
+        }
+
+        public static void ZAP(Cpu cpu)
+        {
+            RU(cpu);
+            G2LS(cpu);
+            WALS(cpu);
+        }
+
+        public static void ZIP(Cpu cpu)
+        {
+            A2X(cpu);
+
+            // Prep based on state table
+            int stateBits = 0;
+            stateBits |= (((cpu.RegisterL >> 14) & 1) << 2);    // L bit 15 into state bit 3
+            stateBits |= (cpu.RegisterL & 2);                   // L bit 2 into state bit 2
+            stateBits |= (cpu.RegisterL & 1);                   // L bit 1 into state bit 1
+
+            switch (stateBits)
+            {
+                case 0:
+                    WY(cpu);
+                    cpu.MCRO = false;
+                    break;
+                case 1:
+                    RB(cpu);
+                    WY(cpu);
+                    cpu.MCRO = false;
+                    break;
+                case 2:
+                    RB(cpu);
+                    WYD(cpu);
+                    cpu.MCRO = false;
+                    break;
+                case 3:
+                    RC(cpu);
+                    WY(cpu);
+                    CI(cpu);
+                    cpu.MCRO = true;
+                    break;
+                case 4:
+                    RB(cpu);
+                    WY(cpu);
+                    cpu.MCRO = false;
+                    break;
+                case 5:
+                    RB(cpu);
+                    WYD(cpu);
+                    cpu.MCRO = false;
+                    break;
+                case 6:
+                    RC(cpu);
+                    WY(cpu);
+                    CI(cpu);
+                    cpu.MCRO = true;
+                    break;
+                case 7:
+                    WY(cpu);
+                    cpu.MCRO = true;
+                    break;
+                default:
+                    throw new InvalidDataException($"{nameof(stateBits)} should only have 7 possible states");
+                    break;
+            }
+
+            L2GD(cpu);
         }
     }
 }

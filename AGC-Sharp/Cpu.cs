@@ -64,6 +64,10 @@ namespace AGC_Sharp
         public bool AdderCarry { get; set; }    // Adder carry bit
         public bool NextInstruction { get; set; }   // Flagged by NISQ control pulse
         public bool InhibitInterrupts { get; set; }
+        public bool NoEAC { get; set; } // Whether end-around carry should be inhibited
+        public bool MCRO { get; set; }  // Special bit value for multiplication
+        public bool ShincSequence { get; set; } // True when in the middle of a SHINC subinstruction
+        public bool PIFL { get; set; }
         public bool Extend { get; set; }
         public bool Extend_Next { get; set; }
         public ushort WriteBus { get; set; }
