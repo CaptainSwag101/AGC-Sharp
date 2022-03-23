@@ -167,11 +167,10 @@ namespace AGC_Sharp.ISA
 
         public static void RUS(Cpu cpu)
         {
-            // Perform RU and then copy bit 15 into bit 16
-            RU(cpu);
-            // Don't mask the top bit of the destination beforehand
-            // because reads onto the write bus are done via bitwise OR
-            cpu.WriteBus |= (ushort)((cpu.WriteBus << 1) & 0x8000); // OR the 15th bit into the 16th
+            // Perform one's complement addition, store result in write bus, copying bit 15 into 16
+            uint temp = (uint)cpu.AdderX + (uint)cpu.AdderY;
+            temp += ((temp >> 16) & 1) | (uint)(cpu.AdderCarry ? 1 : 0);    // Handle end-around-carry and explicit carry bit
+            cpu.WriteBus |= (ushort)((temp & ushort.MaxValue) | ((temp << 1) & 0x8000));    // OR the 15th bit into the 16th
         }
 
         public static void RZ(Cpu cpu)
