@@ -39,8 +39,7 @@ namespace AGC_Sharp.ISA
 
         public static void L2GD(Cpu cpu)
         {
-            cpu.RegisterG &= 1; // We are replacing bits 2-16 overall
-            cpu.RegisterG |= (ushort)((cpu.RegisterL & 0x7FFF) << 1);    // L bits 1-14 into G bits 2-15
+            cpu.RegisterG = (ushort)((cpu.RegisterL & 0x3FFF) << 1);    // L bits 1-14 into G bits 2-15
             cpu.RegisterG |= (ushort)(cpu.RegisterL & 0x8000);          // L bit 16 into G bit 16
             cpu.RegisterG |= (ushort)(cpu.MCRO ? 1 : 0);                // MCRO into G bit 1
         }
@@ -338,13 +337,13 @@ namespace AGC_Sharp.ISA
 
             if ((cpu.RegisterG & 1) == 0)
             {
-                cpu.RegisterA |= (ushort)(cpu.RegisterG & 0x8000);          // G bit 1 into A bit 16
-                cpu.RegisterA |= (ushort)((cpu.RegisterG & 0x8000) >> 1);   // G bit 1 into A bit 15
+                cpu.RegisterA |= (ushort)(cpu.RegisterG & 0x8000);          // G bit 16 into A bit 16
+                cpu.RegisterA |= (ushort)((cpu.RegisterG & 0x8000) >> 1);   // G bit 16 into A bit 15
             }
             else
             {
-                cpu.RegisterA |= (ushort)(cpu.WriteBus & 0x8000);           // WL bit 1 into A bit 16
-                cpu.RegisterA |= (ushort)((cpu.WriteBus & 0x8000) >> 1);    // WL bit 1 into A bit 15
+                cpu.RegisterA |= (ushort)(cpu.WriteBus & 0x8000);           // WL bit 16 into A bit 16
+                cpu.RegisterA |= (ushort)((cpu.WriteBus & 0x8000) >> 1);    // WL bit 16 into A bit 15
             }
         }
 
