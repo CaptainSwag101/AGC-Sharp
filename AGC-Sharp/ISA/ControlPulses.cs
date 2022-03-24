@@ -20,10 +20,11 @@ namespace AGC_Sharp.ISA
 
         public static void G2LS(Cpu cpu)
         {
+            cpu.RegisterL &= 0b0011000000000000;    // We're replacing bits 1-12,15,16
             ushort mainBits = (ushort)((cpu.RegisterG & 0x7FFF) >> 3);  // G bits 4-15 to L bits 1-12
             ushort upperBits = (ushort)(cpu.RegisterG & 0x8000);    // G bit 16 to L bit 16
             upperBits |= (ushort)((cpu.RegisterG & 1) << 14);       // G bit 1 to L bit 15
-            cpu.RegisterL = (ushort)(mainBits | upperBits);         // All together now
+            cpu.RegisterL |= (ushort)(mainBits | upperBits);        // All together now
         }
 
         public static void INVALID(Cpu cpu)
@@ -38,7 +39,8 @@ namespace AGC_Sharp.ISA
 
         public static void L2GD(Cpu cpu)
         {
-            cpu.RegisterG = (ushort)((cpu.RegisterL & 0x7FFF) << 1);    // L bits 1-14 into G bits 2-15
+            cpu.RegisterG &= 1; // We are replacing bits 2-16 overall
+            cpu.RegisterG |= (ushort)((cpu.RegisterL & 0x7FFF) << 1);    // L bits 1-14 into G bits 2-15
             cpu.RegisterG |= (ushort)(cpu.RegisterL & 0x8000);          // L bit 16 into G bit 16
             cpu.RegisterG |= (ushort)(cpu.MCRO ? 1 : 0);                // MCRO into G bit 1
         }
@@ -330,8 +332,9 @@ namespace AGC_Sharp.ISA
 
         public static void WALS(Cpu cpu)
         {
-            cpu.RegisterA = (ushort)(cpu.WriteBus >> 2);        // WL bits 3-16 into A bits 1-14
-            cpu.RegisterL = (ushort)((cpu.WriteBus & 3) << 12); // WL bits 1,2 into L bits 13,14
+            cpu.RegisterA = (ushort)(cpu.WriteBus >> 2);            // WL bits 3-16 into A bits 1-14
+            cpu.RegisterL &= 0b1100111111111111;    // We're replacing L bits 13,14
+            cpu.RegisterL |= (ushort)((cpu.WriteBus & 3) << 12);    // WL bits 1,2 into L bits 13,14
 
             if ((cpu.RegisterG & 1) == 0)
             {
@@ -480,8 +483,6 @@ namespace AGC_Sharp.ISA
 
         public static void ZIP(Cpu cpu)
         {
-            A2X(cpu);
-
             // Prep based on state table
             int stateBits = 0;
             stateBits |= (((cpu.RegisterL >> 14) & 1) << 2);    // L bit 15 into state bit 3
@@ -535,6 +536,7 @@ namespace AGC_Sharp.ISA
                     break;
             }
 
+            A2X(cpu);
             L2GD(cpu);
         }
     }
