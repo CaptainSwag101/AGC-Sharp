@@ -100,12 +100,12 @@ namespace AGC_Sharp.ISA
 
         public static void R1C(Cpu cpu)
         {
-            cpu.WriteBus = 0xFFFE;
+            cpu.WriteBus |= 0xFFFE;
         }
 
         public static void RB1(Cpu cpu)
         {
-            cpu.WriteBus = 1;
+            cpu.WriteBus |= 1;
         }
 
         public static void RA(Cpu cpu)
