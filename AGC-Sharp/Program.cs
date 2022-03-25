@@ -37,11 +37,11 @@ namespace AGC_Sharp
             // Main execution loop
             while (true)
             {
-                if (systemClock.Elapsed.TotalSeconds >= (1 / CLOCK_FREQUENCY))
-                {
-                    systemClock.Restart();
+                //if (systemClock.Elapsed.TotalSeconds >= (1 / CLOCK_FREQUENCY))
+                //{
+                    //systemClock.Restart();
                     cpu.Tick(memory);
-                }
+                //}
             }
         }
     }
