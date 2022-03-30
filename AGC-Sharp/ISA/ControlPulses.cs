@@ -191,32 +191,12 @@ namespace AGC_Sharp.ISA
         // Perform one's complement addition, store result in write bus
         public static void RU(Cpu cpu)
         {
-            // Basic addition step
-            uint temp = (uint)cpu.AdderX + (uint)cpu.AdderY;
-
-            // Handle carries
-            uint carry = (uint)(cpu.AdderCarry ? 1 : 0);  // Explicit carry
-            if (!cpu.NoEAC)
-                carry |= ((temp >> 16) & 1);  // End-around carry if not inhibited
-            temp += carry;
-
-            // Store final result in write bus
-            cpu.WriteBus |= (ushort)(temp & ushort.MaxValue);
+            cpu.WriteBus |= cpu.AdderOutput;
         }
 
         public static void RUS(Cpu cpu)
         {
-            // Basic addition step
-            uint temp = (uint)cpu.AdderX + (uint)cpu.AdderY;
-
-            // Handle carries
-            uint carry = (uint)(cpu.AdderCarry ? 1 : 0);  // Explicit carry
-            if (!cpu.NoEAC)
-                carry |= ((temp >> 16) & 1);  // End-around carry if not inhibited
-            temp += carry;
-
-            // Store final result in write bus
-            cpu.WriteBus |= (ushort)((temp & ushort.MaxValue) | ((temp << 1) & 0x8000));    // OR the 15th bit into the 16th
+            cpu.WriteBus |= (ushort)(cpu.AdderOutput | ((cpu.AdderOutput << 1) & 0x8000));  // OR the 15th bit into the 16th
         }
 
         public static void RZ(Cpu cpu)

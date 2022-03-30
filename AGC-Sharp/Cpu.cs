@@ -62,6 +62,21 @@ namespace AGC_Sharp
         public ushort AdderX { get; set; }      // Adder component X
         public ushort AdderY { get; set; }      // Adder component Y
         public bool AdderCarry { get; set; }    // Adder carry bit
+        public ushort AdderOutput {
+            get
+            {
+                // Basic addition step
+                uint temp = (uint)AdderX + (uint)AdderY;
+
+                // Handle carries
+                uint carry = (uint)(AdderCarry ? 1 : 0);  // Explicit carry
+                if (!NoEAC)
+                    carry |= ((temp >> 16) & 1);  // End-around carry if not inhibited
+                temp += carry;
+
+                return (ushort)temp;
+            }
+        }
         public bool NextInstruction { get; set; }   // Flagged by NISQ control pulse
         public bool InhibitInterrupts { get; set; }
         public bool NoEAC { get; set; } // Whether end-around carry should be inhibited
