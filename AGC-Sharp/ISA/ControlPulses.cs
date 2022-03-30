@@ -436,10 +436,10 @@ namespace AGC_Sharp.ISA
         {
             cpu.AdderX = 0;
             cpu.AdderY = (ushort)((cpu.WriteBus & 0x3FFF) << 1);    // WL bits 1-14 into Y bits 2-15
-            // WL bit 16 into Y bit 16 if circumstances allow
+            cpu.AdderY |= (ushort)(cpu.WriteBus & 0x8000);  // WL bit 16 into Y bit 16
+            // WL bit 16 into Y bit 1 if circumstances allow
             if (!cpu.NoEAC && !cpu.ShincSequence && !(cpu.PIFL && (cpu.RegisterL & 0x4000) > 0))
                 cpu.AdderY |= (ushort)((cpu.WriteBus & 0x8000) >> 15);
-            cpu.AdderY = Helpers.Bit15To16(cpu.AdderY);
             cpu.AdderCarry = false;
         }
 
