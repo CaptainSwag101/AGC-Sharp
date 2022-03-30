@@ -100,6 +100,9 @@ namespace AGC_Sharp
         /// </summary>
         public void Tick(Memory memory)
         {
+            // Every timepulse, reset the MCRO flag for multiplication
+            MCRO = false;
+
             // Before pulse 1, do INKBT1
             if (controlPulseCount == 1)
             {
