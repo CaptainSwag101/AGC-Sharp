@@ -459,6 +459,7 @@ namespace AGC_Sharp.ISA
             // WL bit 16 into Y bit 16 if circumstances allow
             if (!cpu.NoEAC && !cpu.ShincSequence && !(cpu.PIFL && (cpu.RegisterL & 0x4000) > 0))
                 cpu.AdderY |= (ushort)(cpu.WriteBus & 0x8000);
+            cpu.AdderCarry = false;
         }
 
         public static void WY12(Cpu cpu)
