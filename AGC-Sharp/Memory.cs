@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AGC_Sharp
 {
-    internal class Memory
+    public class Memory
     {
         public enum MemoryInitState
         {

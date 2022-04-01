@@ -7,7 +7,7 @@ using static AGC_Sharp.Helpers;
 
 namespace AGC_Sharp.ISA
 {
-    internal static class ControlPulses
+    public static class ControlPulses
     {
         public static void A2X(Cpu cpu)
         {

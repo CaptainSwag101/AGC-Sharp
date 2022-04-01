@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace AGC_Sharp
 {
-    internal delegate void ControlPulseFunc(Cpu cpu);
+    public delegate void ControlPulseFunc(Cpu cpu);
 
-    internal class Cpu
+    public class Cpu
     {
         #region Registers
         public byte RegisterST { get; set; }    // Instruction state

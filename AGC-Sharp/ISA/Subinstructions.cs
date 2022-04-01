@@ -8,9 +8,9 @@ using static AGC_Sharp.ISA.ControlPulses;
 
 namespace AGC_Sharp.ISA
 {
-    internal delegate void SubinstructionFunc(Cpu cpu);
+    public delegate void SubinstructionFunc(Cpu cpu);
 
-    internal static class SubinstructionHelper
+    public static class SubinstructionHelper
     {
         public static Dictionary<(byte Stage, bool Extend, byte Sequence), (string Name, SubinstructionFunc Func)> SubinstructionDictionary = new();
 
