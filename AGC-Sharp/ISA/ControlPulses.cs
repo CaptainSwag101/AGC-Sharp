@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static AGC_Sharp.Helpers;
 
 namespace AGC_Sharp.ISA
 {
@@ -20,11 +21,9 @@ namespace AGC_Sharp.ISA
 
         public static void G2LS(Cpu cpu)
         {
-            cpu.RegisterL &= 0b0011000000000000;    // We're replacing bits 1-12,15,16
-            ushort mainBits = (ushort)((cpu.RegisterG & 0x7FFF) >> 3);  // G bits 4-15 to L bits 1-12
-            ushort upperBits = (ushort)(cpu.RegisterG & 0x8000);    // G bit 16 to L bit 16
-            upperBits |= (ushort)((cpu.RegisterG & 1) << 14);       // G bit 1 to L bit 15
-            cpu.RegisterL |= (ushort)(mainBits | upperBits);        // All together now
+            cpu.RegisterL = CopyWordBits(cpu.RegisterG, cpu.RegisterL, 4..15, 1..12, BitCopyMode.ClearChanged);
+            cpu.RegisterL = CopyWordBits(cpu.RegisterG, cpu.RegisterL, 16..16, 16..16, BitCopyMode.ClearChanged);
+            cpu.RegisterL = CopyWordBits(cpu.RegisterG, cpu.RegisterL, 1..1, 15..15, BitCopyMode.ClearChanged);
         }
 
         public static void INVALID(Cpu cpu)
@@ -39,9 +38,9 @@ namespace AGC_Sharp.ISA
 
         public static void L2GD(Cpu cpu)
         {
-            cpu.RegisterG = (ushort)((cpu.RegisterL & 0x3FFF) << 1);    // L bits 1-14 into G bits 2-15
-            cpu.RegisterG |= (ushort)(cpu.RegisterL & 0x8000);          // L bit 16 into G bit 16
-            cpu.RegisterG |= (ushort)(cpu.MCRO ? 1 : 0);                // MCRO into G bit 1
+            cpu.RegisterG = CopyWordBits(cpu.RegisterL, cpu.RegisterG, 1..14, 2..15, BitCopyMode.ClearChanged); // L bits 1-14 into G bits 2-15
+            cpu.RegisterG = CopyWordBits(cpu.RegisterL, cpu.RegisterG, 16..16, 16..16, BitCopyMode.ClearChanged);   // L bit 16 into G bit 16
+            cpu.RegisterG |= (ushort)(cpu.MCRO ? 1 : 0);    // MCRO into G bit 1
         }
 
         public static void MONEX(Cpu cpu)
@@ -136,7 +135,7 @@ namespace AGC_Sharp.ISA
             }
             else
             {
-                cpu.WriteBus |= Helpers.Bit16To15(cpu.IOChannels[(byte)(cpu.RegisterS & 0x3F)], false);
+                cpu.WriteBus |= Bit16To15(cpu.IOChannels[(byte)(cpu.RegisterS & 0x3F)], false);
             }
         }
 
@@ -147,12 +146,12 @@ namespace AGC_Sharp.ISA
 
         public static void RL(Cpu cpu)
         {
-            cpu.WriteBus |= Helpers.Bit16To15(cpu.RegisterL, false);
+            cpu.WriteBus |= Bit16To15(cpu.RegisterL, false);
         }
 
         public static void RL10BB(Cpu cpu)
         {
-            cpu.WriteBus |= (ushort)(cpu.RegisterB & 0x3FF);
+            cpu.WriteBus = CopyWordBits(cpu.RegisterB, cpu.WriteBus, 1..10, 1..10, BitCopyMode.ClearChanged);
         }
 
         public static void RQ(Cpu cpu)
@@ -311,9 +310,8 @@ namespace AGC_Sharp.ISA
 
         public static void WALS(Cpu cpu)
         {
-            cpu.RegisterA = (ushort)(cpu.WriteBus >> 2);            // WL bits 3-16 into A bits 1-14
-            cpu.RegisterL &= 0b1100111111111111;    // We're replacing L bits 13,14
-            cpu.RegisterL |= (ushort)((cpu.WriteBus & 3) << 12);    // WL bits 1,2 into L bits 13,14
+            cpu.RegisterA = CopyWordBits(cpu.WriteBus, cpu.RegisterA, 3..16, 1..14, BitCopyMode.ClearAll);  // WL bits 3-16 into A bits 1-14
+            cpu.RegisterL = CopyWordBits(cpu.WriteBus, cpu.RegisterL, 1..2, 13..14, BitCopyMode.ClearChanged);  // WL bits 1-2 into L bits 13-14
 
             if ((cpu.RegisterG & 1) == 0)
             {
@@ -344,7 +342,7 @@ namespace AGC_Sharp.ISA
             }
             else
             {
-                cpu.IOChannels[(byte)(cpu.RegisterS & 0x3F)] = Helpers.Bit16To15(cpu.WriteBus, false);  // TODO: Maybe this should be 'true'
+                cpu.IOChannels[(byte)(cpu.RegisterS & 0x3F)] = Bit16To15(cpu.WriteBus, false);  // TODO: Maybe this should be 'true'
             }
         }
 
@@ -389,7 +387,7 @@ namespace AGC_Sharp.ISA
 
         public static void WS(Cpu cpu)
         {
-            cpu.RegisterS = (ushort)(cpu.WriteBus & 0x0FFF);
+            cpu.RegisterS = CopyWordBits(cpu.WriteBus, cpu.RegisterS, 1..12, 1..12, BitCopyMode.ClearAll);
         }
 
         public static void WSC(Cpu cpu)
@@ -446,7 +444,7 @@ namespace AGC_Sharp.ISA
         public static void WY12(Cpu cpu)
         {
             cpu.AdderX = 0;
-            cpu.AdderY = (ushort)(cpu.WriteBus & 0x0FFF);
+            cpu.AdderY = CopyWordBits(cpu.WriteBus, cpu.AdderY, 1..12, 1..12, BitCopyMode.ClearAll);
             cpu.AdderCarry = false;
         }
 
