@@ -68,7 +68,7 @@ namespace AGC_Sharp
             }
             shiftedBits &= bitMask; // Clear out any source bits that aren't targeted
 
-            // Adjust the destination register according to our BitCopyMode
+            // Adjust the destination word according to our BitCopyMode
             switch (mode)
             {
                 // Clear all destination bits
