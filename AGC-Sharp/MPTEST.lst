@@ -1,0 +1,131 @@
+Apollo Guidance Computer (AGC) assembler, version 2020-12-24, built May  2 2022, target AGC4
+(c)2003-2005,2009-2010,2016-2018,2021 Ronald S. Burkey
+Refer to http://www.ibiblio.org/apollo/index.html for more information.
+Pass #1
+Pass #2
+Pass #3
+000001,000001:    4000                                           SETLOC   4000                          	#
+000002,000002:    4000                                           BANK                                   	#
+000003,000003:    4000           30007        BEGIN              CA       ZERO                          	#
+000004,000004:    4001           56001                           XCH      L                             	#
+000005,000005: 
+000006,000006:    4002           34023        TEST1              CA       MPE1                          	#
+000007,000007:    4003           54100                           TS       MPELOC1                       	#
+000008,000008:    4004           34022                           CA       MPA1                          	#
+000009,000009:    4005           00006                           EXTEND                                 	#
+000010,000010:    4006           70100                           MP       MPELOC1                       	#
+000011,000011: 
+000012,000012:    4007           34025        TEST2              CA       MPE2                          	#
+000013,000013:    4010           54101                           TS       MPELOC2                       	#
+000014,000014:    4011           34024                           CA       MPA2                          	#
+000015,000015:    4012           00006                           EXTEND                                 	#
+000016,000016:    4013           70101                           MP       MPELOC2                       	#
+000017,000017: 
+000018,000018:    4014           34027        TEST3              CA       MPE3                          	#
+000019,000019:    4015           54102                           TS       MPELOC3                       	#
+000020,000020:    4016           34026                           CA       MPA3                          	#
+000021,000021:    4017           00006                           EXTEND                                 	#
+000022,000022:    4020           70102                           MP       MPELOC3                       	#
+000023,000023: 
+000024,000024:    4021           14000                           TCF      BEGIN                         	#
+000025,000025: 
+000026,000026:                                                                                          	# CONSTANTS AND SUCH
+000027,000027:    4022                        A                  EQUALS   0                             	#
+000028,000028:    4022                        L                  EQUALS   1                             	#
+000029,000029:    4022                        Q                  EQUALS   2                             	#
+000030,000030:    4022                        EB                 EQUALS   3                             	#
+000031,000031:    4022                        FB                 EQUALS   4                             	#
+000032,000032:    4022                        Z                  EQUALS   5                             	#
+000033,000033:    4022                        BB                 EQUALS   6                             	#
+000034,000034:    4022                        ZERO               EQUALS   7                             	#
+000035,000035:    4022           16344        MPA1               OCT      016344                        	#
+000036,000036:    4023           10101        MPE1               OCT      010101                        	#
+000037,000037:    4024                        MPELOC1            EQUALS   000100                        	#
+000038,000038:    4024           16344        MPA2               OCT      016344                        	#
+000039,000039:    4025           67676        MPE2               OCT      067676                        	#
+000040,000040:    4026                        MPELOC2            EQUALS   000101                        	#
+000041,000041:    4026           37777        MPA3               OCT      037777                        	#
+000042,000042:    4027           00002        MPE3               OCT      000002                        	#
+000043,000043:    4030                        MPELOC3            EQUALS   000102                        	#
+Removing the duplicated lines... 
+
+Symbol-table file written.
+
+
+Usage Table for Fixed-Memory Banks
+----------------------------------
+Bank 00:  0000/2000 words used.
+Bank 01:  0000/2000 words used.
+Bank 02:  0030/2000 words used.
+Bank 03:  0000/2000 words used.
+Bank 04:  0000/2000 words used.
+Bank 05:  0000/2000 words used.
+Bank 06:  0000/2000 words used.
+Bank 07:  0000/2000 words used.
+Bank 10:  0000/2000 words used.
+Bank 11:  0000/2000 words used.
+Bank 12:  0000/2000 words used.
+Bank 13:  0000/2000 words used.
+Bank 14:  0000/2000 words used.
+Bank 15:  0000/2000 words used.
+Bank 16:  0000/2000 words used.
+Bank 17:  0000/2000 words used.
+Bank 20:  0000/2000 words used.
+Bank 21:  0000/2000 words used.
+Bank 22:  0000/2000 words used.
+Bank 23:  0000/2000 words used.
+Bank 24:  0000/2000 words used.
+Bank 25:  0000/2000 words used.
+Bank 26:  0000/2000 words used.
+Bank 27:  0000/2000 words used.
+Bank 30:  0000/2000 words used.
+Bank 31:  0000/2000 words used.
+Bank 32:  0000/2000 words used.
+Bank 33:  0000/2000 words used.
+Bank 34:  0000/2000 words used.
+Bank 35:  0000/2000 words used.
+Bank 36:  0000/2000 words used.
+Bank 37:  0000/2000 words used.
+Bank 40:  0000/2000 words used.
+Bank 41:  0000/2000 words used.
+Bank 42:  0000/2000 words used.
+Bank 43:  0000/2000 words used.
+
+
+Symbol Table
+------------
+     1,C:   A            0000000  		                                  		                                  
+  ==============================  		                                  		                                  
+     2,C:   BB           0000006  		                                  		                                  
+     3,F:   BEGIN           4000  		                                  		                                  
+  ==============================  		                                  		                                  
+     4,C:   EB           0000003  		                                  		                                  
+  ==============================  		                                  		                                  
+     5,C:   FB           0000004  		                                  		                                  
+  ==============================  		                                  		                                  
+     6,C:   L            0000001  		                                  		                                  
+  ==============================  		                                  		                                  
+     7,F:   MPA1            4022  		                                  		                                  
+     8,F:   MPA2            4024  		                                  		                                  
+     9,F:   MPA3            4026  		                                  		                                  
+    10,C:   MPELOC1      0000100  		                                  		                                  
+    11,C:   MPELOC2      0000101  		                                  		                                  
+    12,C:   MPELOC3      0000102  		                                  		                                  
+    13,F:   MPE1            4023  		                                  		                                  
+    14,F:   MPE2            4025  		                                  		                                  
+    15,F:   MPE3            4027  		                                  		                                  
+  ==============================  		                                  		                                  
+    16,C:   Q            0000002  		                                  		                                  
+  ==============================  		                                  		                                  
+    17,F:   TEST1           4002  		                                  		                                  
+    18,F:   TEST2           4007  		                                  		                                  
+    19,F:   TEST3           4014  		                                  		                                  
+  ==============================  		                                  		                                  
+    20,C:   Z            0000005  		                                  		                                  
+    21,C:   ZERO         0000007  		
+
+Unresolved symbols:  0
+Fatal errors:  0
+Warnings:  0
+
+Bugger word 63740 at 02,2032.
