@@ -254,7 +254,9 @@ namespace AGC_Sharp.ISA
         /// <param name="cpu"></param>
         public static void RL(Cpu cpu)
         {
-            cpu.WriteBus |= Bit16To15(cpu.RegisterL, false);
+            cpu.WriteBus = CopyWordBits(cpu.RegisterL, cpu.WriteBus, 1..14, 1..14, BitCopyMode.ClearChanged);
+            cpu.WriteBus = CopyWordBits(cpu.RegisterL, cpu.WriteBus, 16..16, 15..15, BitCopyMode.ClearChanged);
+            cpu.WriteBus = CopyWordBits(cpu.RegisterL, cpu.WriteBus, 16..16, 16..16, BitCopyMode.ClearChanged);
         }
 
         /// <summary>
