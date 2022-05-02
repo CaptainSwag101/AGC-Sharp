@@ -17,14 +17,14 @@ namespace AGC_Sharp
             ISA.SubinstructionHelper.PopulateDictionary();
 
             // Load core rope into fixed memory
-            List<ushort> retread50 = new();
-            BinaryReader binReader = new(new FileStream("Retread50.bin", FileMode.Open, FileAccess.Read, FileShare.Read));
+            List<ushort> coreRope = new();
+            BinaryReader binReader = new(new FileStream("MPTEST.bin", FileMode.Open, FileAccess.Read, FileShare.Read));
             while (binReader.BaseStream.Position < binReader.BaseStream.Length)
             {
                 // The AGC's memory is big-endian so we need to swap the endianness when loading each word
-                retread50.Add(BinaryPrimitives.ReverseEndianness(binReader.ReadUInt16()));
+                coreRope.Add(BinaryPrimitives.ReverseEndianness(binReader.ReadUInt16()));
             }
-            memory.WriteFixedBlock(retread50.ToArray());
+            memory.WriteFixedBlock(coreRope.ToArray());
 
             // DEBUG: Hack in a partial GOJAM so we start execution at the start of the rope
             ISA.Subinstructions.GOJ1(cpu);
