@@ -17,7 +17,7 @@ namespace AGC_Sharp.ISA
         private static List<(int Stage, bool Extend, string Sequence, string Name, SubinstructionFunc Function)> ImplementedSubinstructions = new()
         {
             (2, false, "xxxxxx", "STD2", Subinstructions.STD2),
-            (2, true,  "xxxxxx", "STD2", Subinstructions.STD2),
+            (2, true,  "xxxxxx", "EXTEND", Subinstructions.STD2),
             (0, false, "000xxx", "TC0", Subinstructions.TC0),
             (0, false, "00101x", "TCF0", Subinstructions.TCF0),
             (0, false, "00110x", "TCF0", Subinstructions.TCF0),
