@@ -414,7 +414,7 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((3, new() { ZAP }));
             cpu.ControlPulseQueue.Enqueue((4, new() { RSC, WG }));
             cpu.ControlPulseQueue.Enqueue((5, new() { RZ, WY12, CI }));
-            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ, TL15, NEACOF }));
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ, TL15 })); // NoEAC should be cleared here but not really, EAC inhibited until end of MP3 due to OG logic bugs
             cpu.ControlPulseQueue.Enqueue((7, new() {  }));             // BR1 = 0, BR2 = 0
             cpu.ControlPulseQueue.Enqueue((7, new() {  }));             // BR1 = 0, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((7, new() { RB, WY, A2X }));  // BR1 = 1, BR2 = 0
@@ -426,6 +426,7 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((11, new() {  }));        // BR1 = 0, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((11, new() { RU, WA }));  // BR1 = 1, BR2 = 0
             cpu.ControlPulseQueue.Enqueue((11, new() { RU, WA }));  // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((12, new() { NEACOF }));  // Hack to release NoEAC when real hardware does
         }
 
         public static void MSK0(Cpu cpu)
