@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static AGC_Sharp.ISA.ControlPulses;
+using static AGC_Sharp.ISA.Subinstructions;
 
 namespace AGC_Sharp.ISA
 {
@@ -16,51 +17,51 @@ namespace AGC_Sharp.ISA
 
         private static List<(int Stage, bool Extend, string Sequence, string Name, SubinstructionFunc Function)> ImplementedSubinstructions = new()
         {
-            (2, false, "xxxxxx", "STD2", Subinstructions.STD2),
-            (2, true,  "xxxxxx", "EXTEND", Subinstructions.STD2),
-            (0, false, "000xxx", "TC0", Subinstructions.TC0),
-            (0, false, "00101x", "TCF0", Subinstructions.TCF0),
-            (0, false, "00110x", "TCF0", Subinstructions.TCF0),
-            (0, false, "00111x", "TCF0", Subinstructions.TCF0),
-            (0, true,  "00101x", "BZF0", Subinstructions.BZF0),
-            (0, true,  "00110x", "BZF0", Subinstructions.BZF0),
-            (0, true,  "00111x", "BZF0", Subinstructions.BZF0),
-            (0, true,  "11001x", "BZMF0", Subinstructions.BZMF0),
-            (0, true,  "11010x", "BZMF0", Subinstructions.BZMF0),
-            (0, true,  "11011x", "BZMF0", Subinstructions.BZMF0),
-            (0, true,  "01000x", "MSU0", Subinstructions.MSU0),
-            (0, true,  "01010x", "AUG0", Subinstructions.AUG0),
-            (0, true,  "01011x", "DIM0", Subinstructions.DIM0),
-            (0, true,  "011xxx", "DCA0", Subinstructions.DCA0),
-            (1, true,  "011xxx", "DCA1", Subinstructions.DCA1),
-            (0, true,  "100xxx", "DCS0", Subinstructions.DCS0),
-            (1, true,  "100xxx", "DCS1", Subinstructions.DCS1),
-            (0, true,  "11000x", "SU0", Subinstructions.SU0),
-            (0, false, "111xxx", "MSK0", Subinstructions.MSK0),
-            (0, false, "00100x", "CCS0", Subinstructions.CCS0),
-            (0, false, "011xxx", "CA0", Subinstructions.CA0),
-            (0, false, "100xxx", "CS0", Subinstructions.CS0),
-            (0, false, "01000x", "DAS0", Subinstructions.DAS0),
-            (1, false, "01000x", "DAS1", Subinstructions.DAS1),
-            (0, false, "10110x", "TS0", Subinstructions.TS0),
-            (0, false, "10111x", "XCH0", Subinstructions.XCH0),
-            (0, false, "01001x", "LXCH0", Subinstructions.LXCH0),
-            (0, true,  "01001x", "QXCH0", Subinstructions.QXCH0),
-            (0, false, "10100x", "NDX0", Subinstructions.NDX0),
-            (1, false, "10100x", "NDX1", Subinstructions.NDX1),
-            (0, true,  "101xxx", "NDXX0", Subinstructions.NDXX0),
-            (1, true,  "101xxx", "NDXX1", Subinstructions.NDXX1),
-            (0, false, "110xxx", "AD0", Subinstructions.AD0),
-            (0, false, "01011x", "ADS0", Subinstructions.ADS0),
-            (0, false, "01010x", "INCR0", Subinstructions.INCR0),
-            (1, false, "000xxx", "GOJ1", Subinstructions.GOJ1),
-            (0, true,  "000011", "WAND0", Subinstructions.WAND0),
-            (0, true,  "000101", "WOR0", Subinstructions.WOR0),
-            (0, false, "10101x", "DXCH0", Subinstructions.DXCH0),
-            (1, false, "10101x", "DXCH1", Subinstructions.DXCH1),
-            (0, true,  "111xxx", "MP0", Subinstructions.MP0),
-            (1, true,  "111xxx", "MP1", Subinstructions.MP1),
-            (3, true,  "111xxx", "MP3", Subinstructions.MP3),
+            (2, false, "xxxxxx", "STD2", STD2),
+            (2, true,  "xxxxxx", "EXTEND", STD2),
+            (0, false, "000xxx", "TC0", TC0),
+            (0, false, "00101x", "TCF0", TCF0),
+            (0, false, "00110x", "TCF0", TCF0),
+            (0, false, "00111x", "TCF0", TCF0),
+            (0, true,  "00101x", "BZF0", BZF0),
+            (0, true,  "00110x", "BZF0", BZF0),
+            (0, true,  "00111x", "BZF0", BZF0),
+            (0, true,  "11001x", "BZMF0", BZMF0),
+            (0, true,  "11010x", "BZMF0", BZMF0),
+            (0, true,  "11011x", "BZMF0", BZMF0),
+            (0, true,  "01000x", "MSU0", MSU0),
+            (0, true,  "01010x", "AUG0", AUG0),
+            (0, true,  "01011x", "DIM0", DIM0),
+            (0, true,  "011xxx", "DCA0", DCA0),
+            (1, true,  "011xxx", "DCA1", DCA1),
+            (0, true,  "100xxx", "DCS0", DCS0),
+            (1, true,  "100xxx", "DCS1", DCS1),
+            (0, true,  "11000x", "SU0", SU0),
+            (0, false, "111xxx", "MSK0", MSK0),
+            (0, false, "00100x", "CCS0", CCS0),
+            (0, false, "011xxx", "CA0", CA0),
+            (0, false, "100xxx", "CS0", CS0),
+            (0, false, "01000x", "DAS0", DAS0),
+            (1, false, "01000x", "DAS1", DAS1),
+            (0, false, "10110x", "TS0", TS0),
+            (0, false, "10111x", "XCH0", XCH0),
+            (0, false, "01001x", "LXCH0", LXCH0),
+            (0, true,  "01001x", "QXCH0", QXCH0),
+            (0, false, "10100x", "NDX0", NDX0),
+            (1, false, "10100x", "NDX1", NDX1),
+            (0, true,  "101xxx", "NDXX0", NDXX0),
+            (1, true,  "101xxx", "NDXX1", NDXX1),
+            (0, false, "110xxx", "AD0", AD0),
+            (0, false, "01011x", "ADS0", ADS0),
+            (0, false, "01010x", "INCR0", INCR0),
+            (1, false, "000xxx", "GOJ1", GOJ1),
+            (0, true,  "000011", "WAND0", WAND0),
+            (0, true,  "000101", "WOR0", WOR0),
+            (0, false, "10101x", "DXCH0", DXCH0),
+            (1, false, "10101x", "DXCH1", DXCH1),
+            (0, true,  "111xxx", "MP0", MP0),
+            (1, true,  "111xxx", "MP1", MP1),
+            (3, true,  "111xxx", "MP3", MP3),
         };
 
         public static void PopulateDictionary()
@@ -78,7 +79,7 @@ namespace AGC_Sharp.ISA
                 {
                     for (byte i = 0; i < permutationCount; ++i)
                     {
-                        SubinstructionDictionary.Add((stage, (extendState == 1), i), ("STD2", Subinstructions.STD2));
+                        SubinstructionDictionary.Add((stage, (extendState == 1), i), ("STD2", STD2));
                     }
                 }
             }
