@@ -106,6 +106,7 @@ namespace AGC_Sharp
             // Init the first two I/O channels so we can pass self-tests
             IOChannels = new();
             IOChannels.Add(9, 0);
+            IOChannels.Add(10, 0);
         }
 
         /// <summary>
