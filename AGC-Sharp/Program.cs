@@ -35,12 +35,14 @@ namespace AGC_Sharp
             systemClock.Start();
 
             // Main execution loop
+            long totalTicks = 0;
             while (true)
             {
                 //if (systemClock.Elapsed.TotalSeconds >= (1 / CLOCK_FREQUENCY))
                 //{
                     //systemClock.Restart();
                     cpu.Tick(memory);
+                    ++totalTicks;
                 //}
             }
         }
