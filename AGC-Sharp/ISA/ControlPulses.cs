@@ -78,7 +78,7 @@ namespace AGC_Sharp.ISA
         {
             cpu.RegisterG = CopyWordBits(cpu.RegisterL, cpu.RegisterG, 1..14, 2..15, BitCopyMode.ClearAll); // L bits 1-14 into G bits 2-15
             cpu.RegisterG = CopyWordBits(cpu.RegisterL, cpu.RegisterG, 16..16, 16..16, BitCopyMode.ClearChanged);   // L bit 16 into G bit 16
-            cpu.RegisterG |= (ushort)(cpu.MCRO ? 1 : 0);    // MCRO into G bit 1, bit 0 must be cleared before this point to work
+            cpu.RegisterG |= (ushort)(cpu.MCRO ? 1 : 0);    // MCRO into G bit 1, bit 1 must be cleared before this point to work
         }
 
         /// <summary>
