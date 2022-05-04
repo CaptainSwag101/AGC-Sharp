@@ -48,6 +48,8 @@ namespace AGC_Sharp.ISA
             (0, true,  "01001x", "QXCH0", Subinstructions.QXCH0),
             (0, false, "10100x", "NDX0", Subinstructions.NDX0),
             (1, false, "10100x", "NDX1", Subinstructions.NDX1),
+            (0, true,  "101xxx", "NDXX0", Subinstructions.NDXX0),
+            (1, true,  "101xxx", "NDXX1", Subinstructions.NDXX1),
             (0, false, "110xxx", "AD0", Subinstructions.AD0),
             (0, false, "01011x", "ADS0", Subinstructions.ADS0),
             (0, false, "01010x", "INCR0", Subinstructions.INCR0),
@@ -479,6 +481,29 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((8, new() { RU, WS }));
             cpu.ControlPulseQueue.Enqueue((9, new() { RB, WA }));
             cpu.ControlPulseQueue.Enqueue((10, new() { RU, WB }));
+        }
+
+        public static void NDXX0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((2, new() { RSC, WG }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { RG, WB }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS }));
+            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WG }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { ST1 }));
+        }
+
+        public static void NDXX1(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { RZ, WY12, CI }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { RSC, WG, NISQ }));
+            cpu.ControlPulseQueue.Enqueue((3, new() { RB, WZ }));
+            cpu.ControlPulseQueue.Enqueue((4, new() { RA, WB }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { RZ, WA }));
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { RG, WY, A2X }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RU, WS }));
+            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WA }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { RU, WB, EXT }));
         }
 
         public static void QXCH0(Cpu cpu)
