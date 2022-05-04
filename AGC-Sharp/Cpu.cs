@@ -253,7 +253,7 @@ namespace AGC_Sharp
             Console.WriteLine($"{subinstructionName}");
             Console.WriteLine($"Z = {Convert.ToString(RegisterZ, 8)}, A = {Convert.ToString(RegisterA, 8)}, L = {Convert.ToString(RegisterL, 8)}, B = {Convert.ToString(RegisterB, 8)},");
             Console.WriteLine($"S = {Convert.ToString(RegisterS, 8)}, G = {Convert.ToString(RegisterG, 8)}, Q = {Convert.ToString(RegisterQ, 8)}, SQ = {Convert.ToString(RegisterSQ, 8)},");
-            Console.WriteLine($"EB = {Convert.ToString(RegisterEB, 8)}, FB = {Convert.ToString(RegisterFB, 8)}, BB = {Convert.ToString(RegisterBB, 8)}, ST = {Convert.ToString(RegisterST, 8)}, BR1 = {RegisterBR1}, BR2 = {RegisterBR2}");
+            Console.WriteLine($"EB = {Convert.ToString(RegisterEB >> 8, 8)}, FB = {Convert.ToString(RegisterFB >> 10, 8)}, BB = {Convert.ToString(RegisterBB, 8)}, ST = {Convert.ToString(RegisterST, 8)}, BR1 = {RegisterBR1}, BR2 = {RegisterBR2}");
 
             // Execute subinstruction (queue its control pulses)
             subinstructionFunc(this);
