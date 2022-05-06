@@ -13,21 +13,65 @@ namespace AGC_Sharp
     public class Cpu
     {
         #region Registers
-        public byte RegisterST { get; set; }    // Instruction state
-        public byte RegisterST_Next { get; set; } // Next instruction state
-        public bool RegisterBR1 { get; set; }   // Branch register bit 1
-        public bool RegisterBR2 { get; set; }   // Branch register bit 2
-        public ushort RegisterS { get; set; }   // Memory address the current instruction is accessing
-        public ushort RegisterS_Temp { get; set; } // Flip-flop for temporary storage of S for erasable memory writeback
-        public ushort RegisterA { get; set; }   // Accumulator
-        public ushort RegisterB { get; set; }   // Value of the next instruction
-        public ushort RegisterG { get; set; }   // Memory word temporary storage
-        public ushort RegisterL { get; set; }   // Low-order accumulator
-        public ushort RegisterQ { get; set; }   // Current instruction word
+        /// <summary>
+        /// Stage of the current instruction.
+        /// </summary>
+        public byte RegisterST { get; set; }
+        /// <summary>
+        /// Stage of the upcoming instruction.
+        /// </summary>
+        public byte RegisterST_Next { get; set; }
+        /// <summary>
+        /// Bit 1 of the branch register.
+        /// </summary>
+        public bool RegisterBR1 { get; set; }
+        /// <summary>
+        /// Bit 2 of the branch register.
+        /// </summary>
+        public bool RegisterBR2 { get; set; }
+        /// <summary>
+        /// Memory address being accessed by the current instruction.
+        /// </summary>
+        public ushort RegisterS { get; set; }
+        /// <summary>
+        /// Flip-flop for temporary storage of S when performing erasable memory writeback.
+        /// </summary>
+        public ushort RegisterS_Temp { get; set; }
+        /// <summary>
+        /// Accumulator register, stores the results of many common operations.
+        /// </summary>
+        public ushort RegisterA { get; set; }
+        /// <summary>
+        /// Buffer register, used as temporary storage and to hold the next instruction to be executed.
+        /// </summary>
+        public ushort RegisterB { get; set; }
+        /// <summary>
+        /// Memory buffer register, used to store values being read from or written to memory.
+        /// </summary>
+        public ushort RegisterG { get; set; }
+        /// <summary>
+        /// Low-order accumulator, used to store the lower half of double-precision calculations.
+        /// </summary>
+        public ushort RegisterL { get; set; }
+        /// <summary>
+        /// Return address for TC-related instructions or interrupts.
+        /// </summary>
+        public ushort RegisterQ { get; set; }
+        /// <summary>
+        /// Sequence register, holds the current instruction opcode.
+        /// </summary>
         public ushort RegisterSQ { get; set; }
-        public ushort RegisterZ { get; set; }   // Program Counter
-        public ushort RegisterEB { get; set; }  // Erasable bank
-        private ushort _registerFB;
+        /// <summary>
+        /// Program Counter, holds the address of the next instruction to be executed.
+        /// </summary>
+        public ushort RegisterZ { get; set; }
+        /// <summary>
+        /// Erasable memory bank selection register.
+        /// </summary>
+        public ushort RegisterEB { get; set; }
+        /// <summary>
+        /// Fixed memory bank selection register.
+        /// </summary>
         public ushort RegisterFB                // Fixed bank
         {
             get
@@ -39,6 +83,10 @@ namespace AGC_Sharp
                 _registerFB = (ushort)(Helpers.Bit16To15(value, true) & (0x1F << 10));
             }
         }
+        private ushort _registerFB;
+        /// <summary>
+        /// Both memory bank selection register.
+        /// </summary>
         public ushort RegisterBB
         {
             get
@@ -55,13 +103,28 @@ namespace AGC_Sharp
         #endregion
 
         #region I/O
-        public Dictionary<byte, ushort> IOChannels { get; set; }
+        /// <summary>
+        /// Dictionary of currently-connected I/O channels. An absolute maximum of 512 channels are supported.
+        /// </summary>
+        public Dictionary<ushort, ushort> IOChannels { get; set; }
         #endregion
 
         #region Internal Data
-        public ushort AdderX { get; set; }      // Adder component X
-        public ushort AdderY { get; set; }      // Adder component Y
-        public bool AdderCarry { get; set; }    // Adder carry bit
+        /// <summary>
+        /// Adder component X.
+        /// </summary>
+        public ushort AdderX { get; set; }
+        /// <summary>
+        /// Adder component Y.
+        /// </summary>
+        public ushort AdderY { get; set; }
+        /// <summary>
+        /// Adder explicit carry bit.
+        /// </summary>
+        public bool AdderCarry { get; set; }
+        /// <summary>
+        /// Adder output.
+        /// </summary>
         public ushort AdderOutput {
             get
             {
@@ -77,20 +140,65 @@ namespace AGC_Sharp
                 return (ushort)temp;
             }
         }
-        public bool NextInstruction { get; set; }   // Flagged by NISQ control pulse
+        /// <summary>
+        /// Indicates to the CPU that the next instruction should be
+        /// fetched from memory at the end of the current instruction.
+        /// Set by NISQ control pulse, cleared upon next instruction fetch.
+        /// </summary>
+        public bool NextInstruction { get; set; }
+        /// <summary>
+        /// Indicates to the CPU that interrupts are temporarily disabled.
+        /// Set by INHINT instruction, cleared by RELINT instruction.
+        /// </summary>
         public bool InhibitInterrupts { get; set; }
-        public bool NoEAC { get; set; } // Whether end-around carry should be inhibited
-        public bool MCRO { get; set; }  // Special bit value for multiplication
-        public bool ShincSequence { get; set; } // True when in the middle of a SHINC subinstruction
+        /// <summary>
+        /// Indicates to the CPU that end-around carry should be inhibited in the adder.
+        /// Set by NEACON control pulse, cleared by NEACOF control pulse.
+        /// </summary>
+        public bool NoEAC { get; set; }
+        /// <summary>
+        /// Special memory bit used during multiplication.
+        /// </summary>
+        public bool MCRO { get; set; }
+        /// <summary>
+        /// Indicates to the CPU that we are performing a SHINC operation.
+        /// </summary>
+        public bool ShincSequence { get; set; }
+        /// <summary>
+        /// Special status indicator, not yet implemented.
+        /// </summary>
         public bool PIFL { get; set; }
+        /// <summary>
+        /// Indicates to the CPU that the current instruction is an extra-code instruction.
+        /// Set to <see cref="Extend_Next"/> at the next instruction fetch.
+        /// </summary>
         public bool Extend { get; set; }
+        /// <summary>
+        /// Indicates to the CPU that the next instruction is an extra-code instruction.
+        /// Cleared at the next instruction fetch.
+        /// </summary>
         public bool Extend_Next { get; set; }
+        /// <summary>
+        /// Internal bus used to store intra-CPU data transfer.
+        /// </summary>
         public ushort WriteBus { get; set; }
+        /// <summary>
+        /// Special counter used to keep track of CPU activity to check for software hang-ups.
+        /// </summary>
         public ulong NightWatchman { get; set; }
         #endregion
 
         #region Control Pulse Data
+        /// <summary>
+        /// The current buffer queue for potential control pulses called for
+        /// by the current subinstruction. If there are multiple control pulse sequences available
+        /// for the current time pulse, the branch register is used to select which one is chosen.
+        /// </summary>
         public Queue<(byte PulseNum, List<ControlPulseFunc> PulseList)> ControlPulseQueue { get; set; }  // Control pulse activation number, function
+        /// <summary>
+        /// The current timing pulse count, a value between 1 and 12.
+        /// Resets back to 1 after finishing pulse 12.
+        /// </summary>
         private byte controlPulseCount { get; set; }    // Reset upon every new subinstruction
         #endregion
 
@@ -241,6 +349,11 @@ namespace AGC_Sharp
             ++controlPulseCount;
         }
 
+        /// <summary>
+        /// Determines the next subinstruction to be executed based on <see cref="RegisterSQ"/>
+        /// and prepares the control pulses that are called for by that subinstruction.
+        /// Also potentially outputs debug information about the current CPU state.
+        /// </summary>
         private void PrepNextSubinstruction()
         {
             byte regSQ16_10_Spliced = (byte)(Helpers.Bit16To15(RegisterSQ, true) >> 9); // Use only bits 16,14-10
