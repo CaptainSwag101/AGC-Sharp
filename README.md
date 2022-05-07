@@ -1,2 +1,13 @@
 # AGC-Sharp
-An attempt at creating a control-pulse level emulator of the Apollo Guidance Computer.
+An attempt at creating a control-pulse level emulator of the "Block II" Apollo guidance computer.
+
+## Why the AGC?
+I've been wanting to learn a bit more about computer architecture and to test my programming skills, and watching CuriousMarc's YouTube series on their restoration of an actual original Apollo guidance computer really piqued my curiosity for a number of reasons:
+
+- It's an incredibly unique machine, having been specifically created for space flight, navigation, and spacecraft operation/pilot assistance. While its architecture could theoretically be used as a general-purpose computer, it features dedicated multiplication and division logic, and various other features that allow it to perform complex scientific calculations with impressive accuracy given its size and relative simplicity.
+- Because it was meant to be compact and power-efficient enough to fit on-board the Apollo craft, its design is simple enough for a single person to understand and replicate its design in a more abstract form like an emulator, given enough time to become familiar with the hardware.
+- There is a copious amount of original documentation available, meaning that reverse-engineering is not required to understand the computer at a satisfactory level.
+- The AGC is historically significant: it's hard to imagine that the moon landings would have been possible without a computer on-board to help the pilots with the myriad of tasks needed to get there.
+
+## What's "Block II"?
+When MIT/Draper Labs were originally contracted to build the Apollo guidance computer, the Apollo program was split into two distinct phases, "Block I" and "Block II". This refers primarily to the design of the Apollo spacecraft itself. Block I would be only the Command and Service Module, with no capability to dock with a Lunar Module (which had not been completed at the time Block I missions would begin). The plan was, after several Block I missions, crews would begin using the upgraded Block II spacecraft, which would include the Lunar Module and be capable of landing on the moon. The AGC would also be upgraded for the Block II missions, featuring expanded capabilities and larger memory capacity. However, after the tragic Apollo I fire, only a handful of un-crewed test missions would fly using Block I hardware. Therefore, the vast majority of mission and system software that can be found for the AGC comes from Block II spacecraft, making it preferable for emulation. Integrating Block I compatibility would be non-trivial, and although I do plan to eventually write a Block I emulator, it may require significant refactoring and rewriting of this emulator's code, and would be a long-term milestone rather than something I'm actively focusing on.
