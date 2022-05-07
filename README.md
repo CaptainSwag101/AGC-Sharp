@@ -1,5 +1,5 @@
 # AGC-Sharp
-An attempt at creating a control-pulse level emulator of the "Block II" Apollo guidance computer.
+An attempt at creating a control pulse-level emulator of the Block II Apollo guidance computer.
 
 ## Why the AGC?
 I've been wanting to learn a bit more about computer architecture and to test my programming skills, and watching CuriousMarc's YouTube series on their restoration of an actual original Apollo guidance computer really piqued my curiosity for a number of reasons:
@@ -11,3 +11,13 @@ I've been wanting to learn a bit more about computer architecture and to test my
 
 ## What's "Block II"?
 When MIT/Draper Labs were originally contracted to build the Apollo guidance computer, the Apollo program was split into two distinct phases, "Block I" and "Block II". This refers primarily to the design of the Apollo spacecraft itself. Block I would be only the Command and Service Module, with no capability to dock with a Lunar Module (which had not been completed at the time Block I missions would begin). The plan was, after several Block I missions, crews would begin using the upgraded Block II spacecraft, which would include the Lunar Module and be capable of landing on the moon. The AGC would also be upgraded for the Block II missions, featuring expanded capabilities and larger memory capacity. However, after the tragic Apollo I fire, only a handful of un-crewed test missions would fly using Block I hardware. Therefore, the vast majority of mission and system software that can be found for the AGC comes from Block II spacecraft, making it preferable for emulation. Integrating Block I compatibility would be non-trivial, and although I do plan to eventually write a Block I emulator, it may require significant refactoring and rewriting of this emulator's code, and would be a long-term milestone rather than something I'm actively focusing on.
+
+## What do you mean by "control pulse-level" emulator?
+This refers to the abstraction level of the emulator. Generally speaking, we can describe how AGC executes its machine language instructions at four distinct levels of abstraction from the physical hardware, in descending order (most abstract/highest level to least abstract/lowest level):
+
+1. the instruction level
+2. the subinstruction/MCT level
+3. the control pulse level
+4. the hardware/logic gate level
+
+I have no electrical engineering knowledge whatsoever, so developing a hardware-level emulator is basically out of the question, and there are already a couple of gate-accurate AGC simulator projects on GitHub at the time of writing, such as [https://github.com/virtualagc/agc_simulation](this one by Mike Stewart). There also exist instruction-level emulators, such as the venerable [https://github.com/virtualagc/virtualagc](VirtualAGC project by Ron Burkey and Mike Stewart). However, to my knowledge no one has designed an emulator that works on the control pulse abstraction level. There is at least one advantage to emulating the AGC in this way: Keeping the emulation somewhat close to the hardware allows me to strike what I feel is a "sweet spot" between accuracy and simplicity. Developing a hardware simulation requires extensive electrical knowledge and understanding of the physical layout of the computer, while opting for an instruction-level emulator requires significant workarounds for edge cases and other quirks of the hardware, making code complicated and potentially obtuse or hard to maintain. By emulating at a level between these two points, we maintain relative accuracy while not needing as many edge cases or complex code workarounds.
