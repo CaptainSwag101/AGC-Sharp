@@ -18,8 +18,14 @@ namespace AGC_Sharp.ISA
         private static List<(int Stage, bool Extend, string Sequence, string Name, SubinstructionFunc Function)> ImplementedSubinstructions = new()
         {
             (2, false, "xxxxxx", "STD2", STD2),
-            (2, true,  "xxxxxx", "STD2", STD2),
+            (2, true, "xxxxxx", "STD2", STD2),
             (0, false, "000xxx", "TC0", TC0),
+            (0, true, "00100x", "DV0", DV0),
+            (1, true, "00100x", "DV1", DV1),
+            (3, true, "00100x", "DV3", DV3),
+            (7, true, "00100x", "DV7", DV7),
+            (6, true, "00100x", "DV6", DV6),
+            //(4, true, "00100x", "DV4", DV4),
             (0, false, "00101x", "TCF0", TCF0),
             (0, false, "00110x", "TCF0", TCF0),
             (0, false, "00111x", "TCF0", TCF0),
@@ -346,6 +352,154 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((5, new() { RG, WA }));
             cpu.ControlPulseQueue.Enqueue((7, new() { RB, WSC, WG }));
             cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2 }));
+        }
+
+        public static void DV0(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { RA, WB, TSGN, TMZ }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { RC, WA, TMZ, DVST }));    // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { RC, WA, TMZ, DVST }));    // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((2, new() { DVST }));                 // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { DVST }));                 // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((3, new() { RU, WB, STAGE }));
+            // Shifted in from real DV1
+            cpu.ControlPulseQueue.Enqueue((4, new() { RU, WB }));       // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((4, new() { RU, WB, TSGN })); // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((4, new() { RU, WB }));       // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((4, new() { RU, WB, TSGN })); // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((5, new() { RB, WY, B15X }));         // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RB, WY, B15X }));         // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((5, new() { RC, WY, B15X, Z16 }));    // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RC, WY, B15X, Z16 }));    // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WL, TOV }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { RG, RSC, WB, TSGN }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY, PONEX }));    // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY }));           // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY, PONEX }));    // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY }));           // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WA }));           // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((9, new() { RB, WA }));           // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((9, new() { RC, WA, Z15 }));      // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((9, new() { RC, WA, Z15 }));      // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((10, new() { RU, WB }));
+            cpu.ControlPulseQueue.Enqueue((11, new() { RL, WYD }));
+            cpu.ControlPulseQueue.Enqueue((12, new() { RU, WL }));
+            // Continued in real DV1
+        }
+
+        public static void DV1(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, CLXC })); // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, CLXC })); // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, RB1F })); // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, RB1F })); // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((3, new() { RU, WB, STAGE }));
+            // Shifted in from real DV3
+            cpu.ControlPulseQueue.Enqueue((4, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WB }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((9, new() { RU, WB }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, CLXC }));  // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, CLXC }));  // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, RB1F }));  // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, RB1F }));  // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((12, new() { RU, WB }));
+            // Continued in real DV3
+        }
+
+        public static void DV3(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, CLXC })); // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, CLXC })); // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, RB1F })); // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, RB1F })); // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((3, new() { RU, WB, STAGE }));
+            // Shifted in from real DV7
+            cpu.ControlPulseQueue.Enqueue((4, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WB }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((9, new() { RU, WB }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, CLXC }));  // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, CLXC }));  // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, RB1F }));  // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, RB1F }));  // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((12, new() { RU, WB }));
+            // Continued in real DV7
+        }
+
+        public static void DV7(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, CLXC })); // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, CLXC })); // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, RB1F })); // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, RB1F })); // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((3, new() { RU, WB, STAGE }));
+            // Shifted in from real DV6
+            cpu.ControlPulseQueue.Enqueue((4, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WB }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, CLXC }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RG, WL, TSGU, RB1F }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((9, new() { RU, WB }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, CLXC }));  // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, CLXC }));  // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, RB1F }));  // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((11, new() { RG, WL, TSGU, RB1F }));  // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((12, new() { RU, WB }));
+            // Continued in real DV6
+        }
+
+        public static void DV6(Cpu cpu)
+        {
+            cpu.ControlPulseQueue.Enqueue((1, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, CLXC })); // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, CLXC })); // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, RB1F })); // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((2, new() { RG, WL, TSGU, DVST, RB1F })); // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((3, new() { RU, WB, STAGE }));
+            // Shifted in from real DV4
+            cpu.ControlPulseQueue.Enqueue((4, new() { L2GD, RB, PIFL, WYD, A2X }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WB, WA, TSGU, CLXC }));   // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WB, WA, TSGU, CLXC }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WB, WA, TSGU, RB1F }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WB, WA, TSGU, RB1F }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((6, new() { RZ, TOV }));
+            cpu.ControlPulseQueue.Enqueue((7, new() { }));          // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((7, new() { RC, WA }));   // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((7, new() { RC, WA }));   // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((7, new() { RC, WA }));   // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2, TSGN, RSTSTG }));
+            cpu.ControlPulseQueue.Enqueue((9, new() { RU, WB, WL }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { RC, WL }));
+            // DV4 is gone because it's been totally integrated into DV6 here
         }
 
         public static void GOJ1(Cpu cpu)

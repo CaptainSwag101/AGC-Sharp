@@ -37,6 +37,29 @@ namespace AGC_Sharp.ISA
         }
 
         /// <summary>
+        /// Clear X conditional on the outcome of TSGU. X is
+        /// cleared if BR1 = 0. Used in divide.
+        /// </summary>
+        /// <param name="cpu"></param>
+        public static void CLXC(Cpu cpu)
+        {
+            if (!cpu.RegisterBR1)
+            {
+                cpu.AdderX = 0;
+            }
+        }
+
+        /// <summary>
+        /// Cause divide staging by a simple rule. Also permit
+        /// staging to occur at Time3 of divide cycles (bypassed in this emulator).
+        /// </summary>
+        /// <param name="cpu"></param>
+        public static void DVST(Cpu cpu)
+        {
+            cpu.DVSequence = true;
+        }
+
+        /// <summary>
         /// Set the Extend flip flop.
         /// </summary>
         /// <param name="cpu"></param>
@@ -120,6 +143,11 @@ namespace AGC_Sharp.ISA
             cpu.InhibitInterrupts = false;
         }
 
+        public static void PIFL(Cpu cpu)
+        {
+            cpu.PIFL = true;
+        }
+
         /// <summary>
         /// Set bit 1 of X to 1.
         /// </summary>
@@ -187,6 +215,19 @@ namespace AGC_Sharp.ISA
         public static void RB1(Cpu cpu)
         {
             cpu.WriteBus |= 1;
+        }
+
+        /// <summary>
+        /// Place octal 00001 on the WL's conditional on the
+        /// outcome of TSGU. RB1F if BR1=1.
+        /// </summary>
+        /// <param name="cpu"></param>
+        public static void RB1F(Cpu cpu)
+        {
+            if (cpu.RegisterBR1)
+            {
+                RB1(cpu);
+            }
         }
 
         /// <summary>
@@ -348,6 +389,16 @@ namespace AGC_Sharp.ISA
         }
 
         /// <summary>
+        /// Reset the divide T03 staging condition.
+        /// (In this emulator, it resets the DVStage value to 0.)
+        /// </summary>
+        /// <param name="cpu"></param>
+        public static void RSTSTG(Cpu cpu)
+        {
+            cpu.DVStage = 0;
+        }
+
+        /// <summary>
         /// Set Stage1 flip flop next T12.
         /// </summary>
         /// <param name="cpu"></param>
@@ -363,6 +414,15 @@ namespace AGC_Sharp.ISA
         public static void ST2(Cpu cpu)
         {
             cpu.RegisterST_Next |= 2;
+        }
+
+        /// <summary>
+        /// Execute gray-coded stage advance computed by DVST.
+        /// </summary>
+        /// <param name="cpu"></param>
+        public static void STAGE(Cpu cpu)
+        {
+            ++cpu.DVStage; 
         }
 
         /// <summary>
@@ -456,6 +516,15 @@ namespace AGC_Sharp.ISA
         public static void TSGN2(Cpu cpu)
         {
             cpu.RegisterBR2 = ((cpu.WriteBus >> 15) == 1);
+        }
+
+        /// <summary>
+        /// Test sign of sum (U). Copy U16 into BR1.
+        /// </summary>
+        /// <param name="cpu"></param>
+        public static void TSGU(Cpu cpu)
+        {
+            cpu.RegisterBR1 = ((cpu.AdderOutput >> 15) == 1);
         }
 
         /// <summary>
@@ -676,6 +745,24 @@ namespace AGC_Sharp.ISA
         public static void WZ(Cpu cpu)
         {
             cpu.RegisterZ = cpu.WriteBus;
+        }
+
+        /// <summary>
+        /// Set bit 15 of Z to 1.
+        /// </summary>
+        /// <param name="cpu"></param>
+        public static void Z15(Cpu cpu)
+        {
+            cpu.RegisterZ |= 0x4000;
+        }
+
+        /// <summary>
+        /// Set bit 16 of Z to 1.
+        /// </summary>
+        /// <param name="cpu"></param>
+        public static void Z16(Cpu cpu)
+        {
+            cpu.RegisterZ |= 0x8000;
         }
 
         /// <summary>

@@ -161,6 +161,17 @@ namespace AGC_Sharp
         /// </summary>
         public bool MCRO { get; set; }
         /// <summary>
+        /// Indicates to the CPU that we are currently in a division sequence.
+        /// Reset upon next instruction fetch, reinstated by each subsequent DV stage.
+        /// </summary>
+        public bool DVSequence { get; set; }
+        /// <summary>
+        /// Status byte containing an integer byte by which the DV grey-code
+        /// is shifted in, in place of the ST register when fetching the next instruction
+        /// if DVSequence is true. Reset by RSTSTG control pulse.
+        /// </summary>
+        public byte DVStage { get; set; }
+        /// <summary>
         /// Indicates to the CPU that we are performing a SHINC operation.
         /// </summary>
         public bool ShincSequence { get; set; }
@@ -236,6 +247,12 @@ namespace AGC_Sharp
                     NextInstruction = false;
                     Extend_Next = false;
                 }
+            }
+
+            // On T2, T5, T8, or T11, reset PIFL
+            if (controlPulseCount == 2 || controlPulseCount == 5 || controlPulseCount == 8 || controlPulseCount == 11)
+            {
+                PIFL = false;
             }
 
             // If there are control pulses left to be performed, perform them if it's the proper pulse number
@@ -341,6 +358,9 @@ namespace AGC_Sharp
                 }
 
                 PrepNextSubinstruction();
+
+                // Reset DVSequence, it may be reinstated by the next DV subinstruction
+                DVSequence = false;
             }
 
             // Because writes to the write bus use binary OR,
@@ -359,7 +379,7 @@ namespace AGC_Sharp
             byte regSQ16_10_Spliced = (byte)(Helpers.Bit16To15(RegisterSQ, true) >> 9); // Use only bits 16,14-10
 
             // Pick proper subinstruction
-            (string subinstructionName, ISA.SubinstructionFunc subinstructionFunc) = ISA.SubinstructionHelper.SubinstructionDictionary[(RegisterST, Extend, regSQ16_10_Spliced)];
+            (string subinstructionName, ISA.SubinstructionFunc subinstructionFunc) = ISA.SubinstructionHelper.SubinstructionDictionary[(DVSequence ? (byte)((7 << DVStage) >> 3) : RegisterST, Extend, regSQ16_10_Spliced)];
 
             // Print subinstruction debug info
             Console.WriteLine();
