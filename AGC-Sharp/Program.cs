@@ -35,7 +35,7 @@ namespace AGC_Sharp
             systemClock.Start();
 
             // Main execution loop
-            long totalTicks = 0;
+            ulong totalTicks = 0;
             while (true)
             {
                 // Batch the 12 time pulses per MCT together
