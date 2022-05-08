@@ -5,7 +5,7 @@ namespace AGC_Sharp
 {
     internal class Program
     {
-        private const double CLOCK_FREQUENCY = 1024000.0;
+        private const double CLOCK_FREQUENCY = 1_024_000.0;   // 1.024 MHz, derived from 2.048 MHz crystal
 
         static void Main(string[] args)
         {
@@ -38,12 +38,16 @@ namespace AGC_Sharp
             long totalTicks = 0;
             while (true)
             {
-                //if (systemClock.Elapsed.TotalSeconds >= (1 / CLOCK_FREQUENCY))
-                //{
-                    //systemClock.Restart();
-                    cpu.Tick(memory);
-                    ++totalTicks;
-                //}
+                // Batch the 12 time pulses per MCT together
+                if (systemClock.Elapsed.TotalSeconds >= (1 / (CLOCK_FREQUENCY / 12.0)))
+                {
+                    for (int t = 1; t <= 12; ++t)
+                    {
+                        cpu.Tick(memory);
+                        ++totalTicks;
+                    }
+                    systemClock.Restart();
+                }
             }
         }
     }
