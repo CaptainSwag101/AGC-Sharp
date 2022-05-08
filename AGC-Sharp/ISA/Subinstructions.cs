@@ -18,7 +18,7 @@ namespace AGC_Sharp.ISA
         private static List<(int Stage, bool Extend, string Sequence, string Name, SubinstructionFunc Function)> ImplementedSubinstructions = new()
         {
             (2, false, "xxxxxx", "STD2", STD2),
-            (2, true,  "xxxxxx", "EXTEND", STD2),
+            (2, true,  "xxxxxx", "STD2", STD2),
             (0, false, "000xxx", "TC0", TC0),
             (0, false, "00101x", "TCF0", TCF0),
             (0, false, "00110x", "TCF0", TCF0),
@@ -417,7 +417,7 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((3, new() { ZAP }));
             cpu.ControlPulseQueue.Enqueue((4, new() { RSC, WG }));
             cpu.ControlPulseQueue.Enqueue((5, new() { RZ, WY12, CI }));
-            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ, TL15 })); // NoEAC should be cleared here but not really, EAC inhibited until end of MP3 due to OG logic bugs
+            cpu.ControlPulseQueue.Enqueue((6, new() { RU, WZ, TL15 })); // NEACOF should be here but not really, EAC is inhibited until end of MP3 due to original hardware logic bugs
             cpu.ControlPulseQueue.Enqueue((7, new() {  }));             // BR1 = 0, BR2 = 0
             cpu.ControlPulseQueue.Enqueue((7, new() {  }));             // BR1 = 0, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((7, new() { RB, WY, A2X }));  // BR1 = 1, BR2 = 0

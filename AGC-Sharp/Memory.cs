@@ -74,9 +74,9 @@ namespace AGC_Sharp
 
         public static ushort GetFixedAddress(ushort address, Cpu cpu)
         {
-            if (address >= 0x400 && address <= 0x7FF)   // Bankable fixed memory
+            if (address >= 0x400 && address < 0x800)    // Bankable fixed memory
             {
-                address &= 0x07FF;
+                address &= 0x03FF;
                 address |= (ushort)(cpu.RegisterFB & 0x7C00);
             }
 
