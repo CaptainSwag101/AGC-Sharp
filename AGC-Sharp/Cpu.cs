@@ -359,7 +359,9 @@ namespace AGC_Sharp
 
                 PrepNextSubinstruction();
 
-                // Reset DVSequence, it may be reinstated by the next DV subinstruction
+                // Reset DVSequence, it may be reinstated by the next DV subinstruction.
+                // This is largely redundant as we need to reset DVSequence early to break
+                // out of DV properly.
                 DVSequence = false;
             }
 
@@ -379,7 +381,7 @@ namespace AGC_Sharp
             byte regSQ16_10_Spliced = (byte)(Helpers.Bit16To15(RegisterSQ, true) >> 9); // Use only bits 16,14-10
 
             // Pick proper subinstruction
-            (string subinstructionName, ISA.SubinstructionFunc subinstructionFunc) = ISA.SubinstructionHelper.SubinstructionDictionary[(DVSequence ? (byte)((7 << DVStage) >> 3) : RegisterST, Extend, regSQ16_10_Spliced)];
+            (string subinstructionName, ISA.SubinstructionFunc subinstructionFunc) = ISA.SubinstructionHelper.SubinstructionDictionary[(DVSequence ? (byte)(((7 << DVStage) >> 3) & 7) : RegisterST, Extend, regSQ16_10_Spliced)];
 
             // Print subinstruction debug info
             Console.WriteLine();

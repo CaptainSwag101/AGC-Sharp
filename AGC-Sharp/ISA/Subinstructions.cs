@@ -81,7 +81,7 @@ namespace AGC_Sharp.ISA
             // the current one isn't implemented.
             for (int extendState = 0; extendState <= 1; ++extendState)
             {
-                for (byte stage = 0; stage <= 3; ++stage)
+                for (byte stage = 0; stage <= 7; ++stage)
                 {
                     for (byte i = 0; i < permutationCount; ++i)
                     {
@@ -498,7 +498,10 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((7, new() { RC, WA }));   // BR1 = 1, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((8, new() { RZ, WS, ST2, TSGN, RSTSTG }));
             cpu.ControlPulseQueue.Enqueue((9, new() { RU, WB, WL }));
-            cpu.ControlPulseQueue.Enqueue((10, new() { RC, WL }));
+            cpu.ControlPulseQueue.Enqueue((10, new() { RC, WL }));  // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((10, new() { RC, WL }));  // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((10, new() {  }));        // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((10, new() {  }));        // BR1 = 1, BR2 = 1
             // DV4 is gone because it's been totally integrated into DV6 here
         }
 

@@ -396,6 +396,7 @@ namespace AGC_Sharp.ISA
         public static void RSTSTG(Cpu cpu)
         {
             cpu.DVStage = 0;
+            cpu.DVSequence = false;
         }
 
         /// <summary>
