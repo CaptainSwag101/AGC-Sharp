@@ -1,0 +1,112 @@
+Apollo Guidance Computer (AGC) assembler, version 2020-12-24, built May  2 2022, target AGC4
+(c)2003-2005,2009-2010,2016-2018,2021 Ronald S. Burkey
+Refer to http://www.ibiblio.org/apollo/index.html for more information.
+Pass #1
+Pass #2
+Pass #3
+000001,000001:    4000                                           SETLOC   4000                          	#
+000002,000002:    4000                                           BANK                                   	#
+000003,000003: 
+000004,000004:    4000           30007        BEGIN              CA       ZERO                          	#
+000005,000005:    4001           56001                           XCH      L                             	#
+000006,000006: 
+000007,000007:                                                                                          	# TESTS DV WITH TWO POSITIVES, AND RSC CONTROL PULSE
+000008,000008:    4002           34014        TEST1              CA       DVE1                          	#
+000009,000009:    4003           54002                           TS       Q                             	# 14000 IN Q, +3/8
+000010,000010:    4004           22007                           LXCH     ZERO                          	# +0 IN L
+000011,000011:    4005           34012                           CA       DVA1                          	# 10000 IN A, +1/4
+000012,000012:    4006           00006                           EXTEND                                 	#
+000013,000013:    4007           10002                           DV       Q                             	# DIVIDE 1/4 BY 3/8
+000014,000014:    4010           14011                           NOOP                                   	#
+000015,000015: 
+000016,000016:    4011           14000                           TCF      BEGIN                         	#
+000017,000017: 
+000018,000018:                                                                                          	# CONSTANTS AND SUCH
+000019,000019:    4012                        A                  EQUALS   0                             	#
+000020,000020:    4012                        L                  EQUALS   1                             	#
+000021,000021:    4012                        Q                  EQUALS   2                             	#
+000022,000022:    4012                        EB                 EQUALS   3                             	#
+000023,000023:    4012                        FB                 EQUALS   4                             	#
+000024,000024:    4012                        Z                  EQUALS   5                             	#
+000025,000025:    4012                        BB                 EQUALS   6                             	#
+000026,000026:    4012                        ZERO               EQUALS   7                             	#
+000027,000027: 
+000028,000028:    4012           10000        DVA1               OCT      010000                        	#
+000029,000029:    4013           00000        DVL1               OCT      000000                        	#
+000030,000030:    4014           14000        DVE1               OCT      014000                        	#
+000031,000031:    4015                        DVEMEM1            EQUALS   000002                        	# Q REGISTER
+Removing the duplicated lines... 
+
+Symbol-table file written.
+
+
+Usage Table for Fixed-Memory Banks
+----------------------------------
+Bank 00:  0000/2000 words used.
+Bank 01:  0000/2000 words used.
+Bank 02:  0015/2000 words used.
+Bank 03:  0000/2000 words used.
+Bank 04:  0000/2000 words used.
+Bank 05:  0000/2000 words used.
+Bank 06:  0000/2000 words used.
+Bank 07:  0000/2000 words used.
+Bank 10:  0000/2000 words used.
+Bank 11:  0000/2000 words used.
+Bank 12:  0000/2000 words used.
+Bank 13:  0000/2000 words used.
+Bank 14:  0000/2000 words used.
+Bank 15:  0000/2000 words used.
+Bank 16:  0000/2000 words used.
+Bank 17:  0000/2000 words used.
+Bank 20:  0000/2000 words used.
+Bank 21:  0000/2000 words used.
+Bank 22:  0000/2000 words used.
+Bank 23:  0000/2000 words used.
+Bank 24:  0000/2000 words used.
+Bank 25:  0000/2000 words used.
+Bank 26:  0000/2000 words used.
+Bank 27:  0000/2000 words used.
+Bank 30:  0000/2000 words used.
+Bank 31:  0000/2000 words used.
+Bank 32:  0000/2000 words used.
+Bank 33:  0000/2000 words used.
+Bank 34:  0000/2000 words used.
+Bank 35:  0000/2000 words used.
+Bank 36:  0000/2000 words used.
+Bank 37:  0000/2000 words used.
+Bank 40:  0000/2000 words used.
+Bank 41:  0000/2000 words used.
+Bank 42:  0000/2000 words used.
+Bank 43:  0000/2000 words used.
+
+
+Symbol Table
+------------
+     1,C:   A            0000000  		                                  		                                  
+  ==============================  		                                  		                                  
+     2,C:   BB           0000006  		                                  		                                  
+     3,F:   BEGIN           4000  		                                  		                                  
+  ==============================  		                                  		                                  
+     4,F:   DVA1            4012  		                                  		                                  
+     5,C:   DVEMEM1      0000002  		                                  		                                  
+     6,F:   DVE1            4014  		                                  		                                  
+     7,F:   DVL1            4013  		                                  		                                  
+  ==============================  		                                  		                                  
+     8,C:   EB           0000003  		                                  		                                  
+  ==============================  		                                  		                                  
+     9,C:   FB           0000004  		                                  		                                  
+  ==============================  		                                  		                                  
+    10,C:   L            0000001  		                                  		                                  
+  ==============================  		                                  		                                  
+    11,C:   Q            0000002  		                                  		                                  
+  ==============================  		                                  		                                  
+    12,F:   TEST1           4002  		                                  		                                  
+  ==============================  		                                  		                                  
+    13,C:   Z            0000005  		                                  		                                  
+    14,C:   ZERO         0000007  		
+
+Unresolved symbols:  0
+Fatal errors:  0
+Warnings:  0
+
+Bugger word 47651 at 02,2017.
