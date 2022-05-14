@@ -18,7 +18,7 @@ namespace AGC_Sharp
 
             // Load core rope into fixed memory
             List<ushort> coreRope = new();
-            BinaryReader binReader = new(new FileStream("Ropes/Retread50.bin", FileMode.Open, FileAccess.Read, FileShare.Read));
+            BinaryReader binReader = new(new FileStream("Ropes/DVTEST.bin", FileMode.Open, FileAccess.Read, FileShare.Read));
             while (binReader.BaseStream.Position < binReader.BaseStream.Length)
             {
                 // The AGC's memory is big-endian so we need to swap the endianness when loading each word
