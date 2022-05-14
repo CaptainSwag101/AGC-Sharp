@@ -731,11 +731,11 @@ namespace AGC_Sharp.ISA
         public static void WYD(Cpu cpu)
         {
             cpu.AdderX = 0;
-            cpu.AdderY = (ushort)((cpu.WriteBus & 0x3FFF) << 1);    // WL bits 1-14 into Y bits 2-15
-            cpu.AdderY |= (ushort)(cpu.WriteBus & 0x8000);  // WL bit 16 into Y bit 16
+            cpu.AdderY = CopyWordBits(cpu.WriteBus, cpu.AdderY, 1..14, 2..15, BitCopyMode.ClearAll);    // WL bits 1-14 into Y bits 2-15
+            cpu.AdderY = CopyWordBits(cpu.WriteBus, cpu.AdderY, 16..16, 16..16, BitCopyMode.ClearChanged);  // WL bit 16 into Y bit 16
             // WL bit 16 into Y bit 1 if circumstances allow
             if (!cpu.NoEAC && !cpu.ShincSequence && !(cpu.PIFL && (cpu.RegisterL & 0x4000) > 0))
-                cpu.AdderY |= (ushort)((cpu.WriteBus & 0x8000) >> 15);
+                cpu.AdderY = CopyWordBits(cpu.WriteBus, cpu.AdderY, 16..16, 1..1, BitCopyMode.ClearChanged);
             cpu.AdderCarry = false;
         }
 
