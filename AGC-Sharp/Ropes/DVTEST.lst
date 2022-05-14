@@ -31,9 +31,9 @@ Pass #3
 000025,000025:    4012                        BB                 EQUALS   6                             	#
 000026,000026:    4012                        ZERO               EQUALS   7                             	#
 000027,000027: 
-000028,000028:    4012           10000        DVA1               OCT      010000                        	#
-000029,000029:    4013           00000        DVL1               OCT      000000                        	#
-000030,000030:    4014           14000        DVE1               OCT      014000                        	#
+000028,000028:    4012           12345        DVA1               OCT      012345                        	#
+000029,000029:    4013           33400        DVL1               OCT      033400                        	#
+000030,000030:    4014           21212        DVE1               OCT      021212                        	#
 000031,000031:    4015                        DVEMEM1            EQUALS   000002                        	# Q REGISTER
 Removing the duplicated lines... 
 
@@ -109,4 +109,4 @@ Unresolved symbols:  0
 Fatal errors:  0
 Warnings:  0
 
-Bugger word 47651 at 02,2017.
+Bugger word 44471 at 02,2017.
