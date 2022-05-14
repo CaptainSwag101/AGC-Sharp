@@ -363,10 +363,10 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((2, new() { DVST }));                 // BR1 = 1, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((3, new() { RU, WB, STAGE }));
             // Shifted in from real DV1
-            cpu.ControlPulseQueue.Enqueue((4, new() { RU, WB }));       // BR1 = 0, BR2 = 0
-            cpu.ControlPulseQueue.Enqueue((4, new() { RU, WB, TSGN })); // BR1 = 0, BR2 = 1
-            cpu.ControlPulseQueue.Enqueue((4, new() { RU, WB }));       // BR1 = 1, BR2 = 0
-            cpu.ControlPulseQueue.Enqueue((4, new() { RU, WB, TSGN })); // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((4, new() { RL, WB }));       // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((4, new() { RL, WB, TSGN })); // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((4, new() { RL, WB }));       // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((4, new() { RL, WB, TSGN })); // BR1 = 1, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((5, new() { RB, WY, B15X }));         // BR1 = 0, BR2 = 0
             cpu.ControlPulseQueue.Enqueue((5, new() { RB, WY, B15X }));         // BR1 = 0, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((5, new() { RC, WY, B15X, Z16 }));    // BR1 = 1, BR2 = 0
