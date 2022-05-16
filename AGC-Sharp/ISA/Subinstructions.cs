@@ -13,9 +13,9 @@ namespace AGC_Sharp.ISA
 
     public static class SubinstructionHelper
     {
-        public static Dictionary<(byte Stage, bool Extend, byte Sequence), (string Name, SubinstructionFunc Func)> SubinstructionDictionary = new();
+        public readonly static Dictionary<(byte Stage, bool Extend, byte Sequence), (string Name, SubinstructionFunc Func)> SubinstructionDictionary = new();
 
-        private static List<(int Stage, bool Extend, string Sequence, string Name, SubinstructionFunc Function)> ImplementedSubinstructions = new()
+        private readonly static List<(int Stage, bool Extend, string Sequence, string Name, SubinstructionFunc Function)> ImplementedSubinstructions = new()
         {
             (2, false,  "xxxxxx",   "STD2",     STD2),
             (2, true,   "xxxxxx",   "STD2",     STD2),
