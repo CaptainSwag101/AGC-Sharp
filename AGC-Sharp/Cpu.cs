@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static AGC_Sharp.Helpers;
 
 namespace AGC_Sharp
 {
@@ -60,7 +61,7 @@ namespace AGC_Sharp
         /// <summary>
         /// Sequence register, holds the current instruction opcode.
         /// </summary>
-        public ushort RegisterSQ { get; set; }
+        public byte RegisterSQ { get; set; }
         /// <summary>
         /// Program Counter, holds the address of the next instruction to be executed.
         /// </summary>
@@ -210,7 +211,7 @@ namespace AGC_Sharp
         /// The current timing pulse count, a value between 1 and 12.
         /// Resets back to 1 after finishing pulse 12.
         /// </summary>
-        private byte controlPulseCount { get; set; }    // Reset upon every new subinstruction
+        private byte controlPulseNum { get; set; }    // Reset upon every new subinstruction
         #endregion
 
         /// <summary>
@@ -219,13 +220,15 @@ namespace AGC_Sharp
         public Cpu()
         {
             ControlPulseQueue = new();
-            controlPulseCount = 1;
+            controlPulseNum = 1;
             NightWatchman = 0;
 
             // Init the first two I/O channels so we can pass self-tests
-            IOChannels = new();
-            IOChannels.Add(9, 0);
-            IOChannels.Add(10, 0);
+            IOChannels = new()
+            {
+                { 9, 0 },
+                { 10, 0 }
+            };
         }
 
         /// <summary>
@@ -239,7 +242,7 @@ namespace AGC_Sharp
             MCRO = false;
 
             // Before pulse 1, do INKBT1
-            if (controlPulseCount == 1)
+            if (controlPulseNum == 1)
             {
                 // TODO: Add INKL handling once we implement I/O!
                 if (RegisterST != 2)
@@ -250,7 +253,7 @@ namespace AGC_Sharp
             }
 
             // On T2, T5, T8, or T11, reset PIFL
-            if (controlPulseCount == 2 || controlPulseCount == 5 || controlPulseCount == 8 || controlPulseCount == 11)
+            if (controlPulseNum == 2 || controlPulseNum == 5 || controlPulseNum == 8 || controlPulseNum == 11)
             {
                 PIFL = false;
             }
@@ -263,7 +266,7 @@ namespace AGC_Sharp
                 List<List<ControlPulseFunc>> branchPulseList = new();
                 foreach (var ctrlPulseEntry in ControlPulseQueue)
                 {
-                    if (ctrlPulseEntry.PulseNum == controlPulseCount)
+                    if (ctrlPulseEntry.PulseNum == controlPulseNum)
                     {
                         branchPulseList.Add(ctrlPulseEntry.PulseList);
                     }
@@ -282,7 +285,7 @@ namespace AGC_Sharp
                     // Sanity check: Throw if we have more than 4 possible branches,
                     // it means we screwed up our subinstruction.
                     if (branchPulseList.Count > 4)
-                        throw new InvalidDataException($"The current subinstruction at timepulse {controlPulseCount} has {branchPulseList.Count} possible branches, which is invalid.");
+                        throw new InvalidDataException($"The current subinstruction at timepulse {controlPulseNum} has {branchPulseList.Count} possible branches, which is invalid.");
 
                     List<ControlPulseFunc>? selectedPulseList = null;
                     if (RegisterBR1 == false && RegisterBR2 == false)
@@ -313,7 +316,7 @@ namespace AGC_Sharp
             }
 
             // Memory reads are done after pulse 4
-            if (controlPulseCount == 4)
+            if (controlPulseNum == 4)
             {
                 // Check if the read is for erasable or fixed memory
                 if (RegisterS < 0x400)  // Erasable memory
@@ -330,34 +333,41 @@ namespace AGC_Sharp
                     RegisterG = memory.ReadWord(RegisterS, this);
                     RegisterG = Helpers.Bit16To15(RegisterG, false);
                 }
-
-                // Print mid-instruction debug info
-                Console.WriteLine($"G updated to {Convert.ToString(RegisterG, 8)}");
             }
 
             // Only perform writeback if we performed an erasable read earlier
-            if (controlPulseCount == 9 && RegisterS_Temp > 0)
+            if (controlPulseNum == 9 && RegisterS_Temp > 0)
             {
                 // TODO: Theoretically we should be re-computing the parity bit because it is discarded when loading into G
                 memory.WriteErasableWord(RegisterS_Temp, RegisterG, this);  // This is the only place we ever write to erasable memory!
                 RegisterS_Temp = 0;
             }
 
+#if DEBUG
+            // Print state debug info at the end of each timepulse's execution,
+            // before we clear the write bus or queue the next subinstruction.
+            PrintCpuStateDebugInfo();
+#endif
+
             // After executing pulse 12, reset the control pulse count.
             // Then, perform bookkeeping tasks to prepare to load the next instruction.
-            if (controlPulseCount == 12)
+            if (controlPulseNum == 12)
             {
-                controlPulseCount = 0;  // This will be incremented to 1 shortly hereafter
+                controlPulseNum = 0;  // This will be incremented to 1 shortly hereafter
                 RegisterST = RegisterST_Next;
                 RegisterST_Next = 0;
 
                 if (NextInstruction)
                 {
-                    RegisterSQ = (ushort)(RegisterB & 0xBE00);  // Copy bits 16,14-10
+                    RegisterSQ = (byte)CopyWordBits(RegisterB, 0, 10..14, 1..5, BitCopyMode.ClearNone); // Copy bits 14-10
+                    RegisterSQ = (byte)CopyWordBits(RegisterB, RegisterSQ, 16..16, 6..6, BitCopyMode.ClearNone);    // Copy bit 16
                     Extend = Extend_Next;
                 }
 
-                PrepNextSubinstruction();
+                // Get the new subinstruction to be executed now that we've updated the CPU
+                // state accordingly, and queue up its control pulses.
+                (string _, ISA.SubinstructionFunc subinstructionFunc) = GetCurrentSubinstruction();
+                subinstructionFunc(this);
 
                 // Reset DVSequence, it may be reinstated by the next DV subinstruction.
                 // This is largely redundant as we need to reset DVSequence early to break
@@ -365,33 +375,47 @@ namespace AGC_Sharp
                 DVSequence = false;
             }
 
-            // Because writes to the write bus use binary OR,
-            // we need to zero it out after every time pulse.
+            // Because writes to the write bus use binary OR, we need to zero it out after every time pulse.
             WriteBus = 0;
-            ++controlPulseCount;
+
+            // Increment the control pulse number
+            ++controlPulseNum;
         }
 
         /// <summary>
         /// Determines the next subinstruction to be executed based on <see cref="RegisterSQ"/>
         /// and prepares the control pulses that are called for by that subinstruction.
-        /// Also potentially outputs debug information about the current CPU state.
         /// </summary>
-        private void PrepNextSubinstruction()
+        public (string Name, ISA.SubinstructionFunc Func) GetCurrentSubinstruction()
         {
-            byte regSQ16_10_Spliced = (byte)(Helpers.Bit16To15(RegisterSQ, true) >> 9); // Use only bits 16,14-10
+            // Use either the ST register or the DVStage flip-flops to get the subinstruction,
+            // depending on the current context.
+            byte stage;
+            if (DVSequence)
+            {
+                stage = (byte)(((0b111 << DVStage) >> 3) & 0b111);
+            }
+            else
+            {
+                stage = RegisterST;
+            }
 
-            // Pick proper subinstruction
-            (string subinstructionName, ISA.SubinstructionFunc subinstructionFunc) = ISA.SubinstructionHelper.SubinstructionDictionary[(DVSequence ? (byte)(((7 << DVStage) >> 3) & 7) : RegisterST, Extend, regSQ16_10_Spliced)];
+            return ISA.SubinstructionHelper.SubinstructionDictionary[(stage, Extend, RegisterSQ)];
+        }
+
+        /// <summary>
+        /// Print debug information about the current CPU state.
+        /// </summary>
+        public void PrintCpuStateDebugInfo()
+        {
+            (string subinstructionName, ISA.SubinstructionFunc _) = GetCurrentSubinstruction();
 
             // Print subinstruction debug info
             Console.WriteLine();
-            Console.WriteLine($"{subinstructionName}");
+            Console.WriteLine($"{subinstructionName} (T{controlPulseNum})");
             Console.WriteLine($"Z = {Convert.ToString(RegisterZ, 8)}, A = {Convert.ToString(RegisterA, 8)}, L = {Convert.ToString(RegisterL, 8)}, B = {Convert.ToString(RegisterB, 8)}, EXTEND = {Extend}, INHINT = {InhibitInterrupts}");
             Console.WriteLine($"S = {Convert.ToString(RegisterS, 8)}, G = {Convert.ToString(RegisterG, 8)}, Q = {Convert.ToString(RegisterQ, 8)}, SQ = {Convert.ToString(RegisterSQ, 8)}, WL = {Convert.ToString(WriteBus, 8)}, X = {Convert.ToString(AdderX, 8)}, Y = {Convert.ToString(AdderY, 8)}");
-            Console.WriteLine($"EB = {Convert.ToString(RegisterEB >> 8, 8)}, FB = {Convert.ToString(RegisterFB >> 10, 8)}, BB = {Convert.ToString(RegisterBB, 8)}, ST = {Convert.ToString(RegisterST, 8)}, BR1 = {RegisterBR1}, BR2 = {RegisterBR2}");
-
-            // Execute subinstruction (queue its control pulses)
-            subinstructionFunc(this);
+            Console.WriteLine($"EB = {Convert.ToString(RegisterEB >> 8, 8)}, FB = {Convert.ToString(RegisterFB >> 10, 8)}, BB = {Convert.ToString(RegisterBB, 8)}, ST = {Convert.ToString(RegisterST, 8)}, DVSequence = {DVSequence}, DVStage = {DVStage}, BR1 = {RegisterBR1}, BR2 = {RegisterBR2}");
         }
     }
 }
