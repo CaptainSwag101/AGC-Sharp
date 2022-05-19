@@ -416,9 +416,9 @@ namespace AGC_Sharp
             // Print subinstruction debug info
             Console.WriteLine();
             Console.WriteLine($"{CurrentSubinstructionName} (T{controlPulseNum})");
-            Console.WriteLine($"Z = {Convert.ToString(RegisterZ, 8)}, A = {Convert.ToString(RegisterA, 8)}, L = {Convert.ToString(RegisterL, 8)}, B = {Convert.ToString(RegisterB, 8)}, EXTEND = {Extend}, INHINT = {InhibitInterrupts}");
-            Console.WriteLine($"S = {Convert.ToString(RegisterS, 8)}, G = {Convert.ToString(RegisterG, 8)}, Q = {Convert.ToString(RegisterQ, 8)}, SQ = {Convert.ToString(RegisterSQ, 8)}, WL = {Convert.ToString(WriteBus, 8)}, X = {Convert.ToString(AdderX, 8)}, Y = {Convert.ToString(AdderY, 8)}");
-            Console.WriteLine($"EB = {Convert.ToString(RegisterEB >> 8, 8)}, FB = {Convert.ToString(RegisterFB >> 10, 8)}, BB = {Convert.ToString(RegisterBB, 8)}, ST = {Convert.ToString(RegisterST, 8)}, DVSequence = {DVSequence}, DVStage = {DVStage}, BR1 = {RegisterBR1}, BR2 = {RegisterBR2}");
+            Console.WriteLine($"Z = {NumToOctal(RegisterZ, 6)}, A = {NumToOctal(RegisterA, 6)}, L = {NumToOctal(RegisterL, 6)}, B = {NumToOctal(RegisterB, 6)}, EXTEND = {Extend}, INHINT = {InhibitInterrupts}");
+            Console.WriteLine($"S = {NumToOctal(RegisterS, 6)}, G = {NumToOctal(RegisterG, 6)}, Q = {NumToOctal(RegisterQ, 6)}, SQ = {NumToOctal(RegisterSQ, 2)}, WL = {NumToOctal(WriteBus, 6)}, X = {NumToOctal(AdderX, 6)}, Y = {NumToOctal(AdderY, 6)}");
+            Console.WriteLine($"EB = {NumToOctal(RegisterEB >> 8, 2)}, FB = {NumToOctal(RegisterFB >> 10, 2)}, BB = {NumToOctal(RegisterBB, 6)}, ST = {NumToOctal(RegisterST, 1)}, DVStage = {DVStage}, BR1 = {RegisterBR1}, BR2 = {RegisterBR2}");
         }
     }
 }

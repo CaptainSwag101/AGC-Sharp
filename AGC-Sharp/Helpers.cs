@@ -23,6 +23,11 @@ namespace AGC_Sharp
             return inVal;
         }
 
+        public static string NumToOctal(long word, byte padLen)
+        {
+            return Convert.ToString(word, 8).PadLeft(padLen, '0');
+        }
+
         public enum BitCopyMode
         {
             ClearAll,
