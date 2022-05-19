@@ -142,6 +142,10 @@ namespace AGC_Sharp
             }
         }
         /// <summary>
+        /// The name of the current subinstruction the CPU is executing.
+        /// </summary>
+        public string CurrentSubinstructionName { get; set; }
+        /// <summary>
         /// Indicates to the CPU that the next instruction should be
         /// fetched from memory at the end of the current instruction.
         /// Set by NISQ control pulse, cleared upon next instruction fetch.
@@ -222,6 +226,7 @@ namespace AGC_Sharp
             ControlPulseQueue = new();
             controlPulseNum = 1;
             NightWatchman = 0;
+            CurrentSubinstructionName = "TC0";
 
             // Init the first two I/O channels so we can pass self-tests
             IOChannels = new()
@@ -366,7 +371,7 @@ namespace AGC_Sharp
 
                 // Get the new subinstruction to be executed now that we've updated the CPU
                 // state accordingly, and queue up its control pulses.
-                (string _, ISA.SubinstructionFunc subinstructionFunc) = GetCurrentSubinstruction();
+                (CurrentSubinstructionName, ISA.SubinstructionFunc subinstructionFunc) = GetCurrentSubinstruction();
                 subinstructionFunc(this);
 
                 // Reset DVSequence, it may be reinstated by the next DV subinstruction.
@@ -408,11 +413,9 @@ namespace AGC_Sharp
         /// </summary>
         public void PrintCpuStateDebugInfo()
         {
-            (string subinstructionName, ISA.SubinstructionFunc _) = GetCurrentSubinstruction();
-
             // Print subinstruction debug info
             Console.WriteLine();
-            Console.WriteLine($"{subinstructionName} (T{controlPulseNum})");
+            Console.WriteLine($"{CurrentSubinstructionName} (T{controlPulseNum})");
             Console.WriteLine($"Z = {Convert.ToString(RegisterZ, 8)}, A = {Convert.ToString(RegisterA, 8)}, L = {Convert.ToString(RegisterL, 8)}, B = {Convert.ToString(RegisterB, 8)}, EXTEND = {Extend}, INHINT = {InhibitInterrupts}");
             Console.WriteLine($"S = {Convert.ToString(RegisterS, 8)}, G = {Convert.ToString(RegisterG, 8)}, Q = {Convert.ToString(RegisterQ, 8)}, SQ = {Convert.ToString(RegisterSQ, 8)}, WL = {Convert.ToString(WriteBus, 8)}, X = {Convert.ToString(AdderX, 8)}, Y = {Convert.ToString(AdderY, 8)}");
             Console.WriteLine($"EB = {Convert.ToString(RegisterEB >> 8, 8)}, FB = {Convert.ToString(RegisterFB >> 10, 8)}, BB = {Convert.ToString(RegisterBB, 8)}, ST = {Convert.ToString(RegisterST, 8)}, DVSequence = {DVSequence}, DVStage = {DVStage}, BR1 = {RegisterBR1}, BR2 = {RegisterBR2}");
