@@ -448,7 +448,7 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((3, new() { RU, WB, STAGE }));
             // Shifted in from real DV4
             cpu.ControlPulseQueue.Enqueue((4, new() { L2GD, RB, PIFL, WYD, A2X }));
-            cpu.ControlPulseQueue.Enqueue((5, new() { RG, WB, WA, TSGU, CLXC, RB1F }));
+            cpu.ControlPulseQueue.Enqueue((5, new() { RG, TSGU, CLXC, RB1F, WB, WA }));
             cpu.ControlPulseQueue.Enqueue((6, new() { RZ, TOV }));
             cpu.ControlPulseQueue.Enqueue((7, new() { }));          // BR1 = 0, BR2 = 0
             cpu.ControlPulseQueue.Enqueue((7, new() { RC, WA }));   // BR1 = 0, BR2 = 1
