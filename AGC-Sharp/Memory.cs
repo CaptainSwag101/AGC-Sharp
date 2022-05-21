@@ -63,7 +63,7 @@ namespace AGC_Sharp
 
         public static ushort GetErasableAddress(ushort address, Cpu cpu)
         {
-            if (address >= 0x300 && address <= 0x3FF)   // Banked erasable memory
+            if (address >= 0x300 && address <= 0x3FF)   // Banked erasable memory, 1400 to 1777
             {
                 address &= 0x00FF;
                 address |= (ushort)(cpu.RegisterEB & 0x0700);
@@ -74,7 +74,7 @@ namespace AGC_Sharp
 
         public static ushort GetFixedAddress(ushort address, Cpu cpu)
         {
-            if (address >= 0x400 && address < 0x800)    // Bankable fixed memory
+            if (address >= 0x400 && address <= 0x7FF)   // Bankable fixed memory, 2000 to 3777
             {
                 address &= 0x03FF;
                 address |= (ushort)(cpu.RegisterFB & 0x7C00);
@@ -86,17 +86,17 @@ namespace AGC_Sharp
         public ushort ReadWord(ushort address, Cpu cpu)
         {
             // Sanity check
-            if (address >= (0x0FFF))
+            if (address > 0x0FFF)
             {
                 throw new ArgumentOutOfRangeException(nameof(address),
-                    $"The specified address is outside the bounds of total memory ({0x0FFF} words).");
+                    $"The specified address is outside the bounds of the memory mapped region ({0x0FFF} words).");
             }
 
-            if (address < 0x400)    // Erasable memory
+            if (address <= 0x3FF)   // Erasable memory, 0000 to 1777
             {
                 return ReadErasable(GetErasableAddress(address, cpu));
             }
-            else                    // Fixed memory
+            else                    // Fixed memory, 2000 to 7777
             {
                 return ReadFixed(GetFixedAddress(address, cpu));
             }
