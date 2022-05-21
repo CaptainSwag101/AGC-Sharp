@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -415,10 +415,9 @@ namespace AGC_Sharp
         {
             // Print subinstruction debug info
             Console.WriteLine();
-            Console.WriteLine($"{CurrentSubinstructionName} (T{controlPulseNum.ToString().PadLeft(2, '0')})");
-            Console.WriteLine($"Z = {NumToOctal(RegisterZ, 6)}, A = {NumToOctal(RegisterA, 6)}, L = {NumToOctal(RegisterL, 6)}, B = {NumToOctal(RegisterB, 6)}, EXTEND = {Extend}, INHINT = {InhibitInterrupts}");
-            Console.WriteLine($"S = {NumToOctal(RegisterS, 6)}, G = {NumToOctal(RegisterG, 6)}, Q = {NumToOctal(RegisterQ, 6)}, SQ = {NumToOctal(RegisterSQ, 2)}, WL = {NumToOctal(WriteBus, 6)}, X = {NumToOctal(AdderX, 6)}, Y = {NumToOctal(AdderY, 6)}");
-            Console.WriteLine($"EB = {NumToOctal(RegisterEB >> 8, 2)}, FB = {NumToOctal(RegisterFB >> 10, 2)}, BB = {NumToOctal(RegisterBB, 6)}, ST = {NumToOctal(RegisterST, 1)}, DVStage = {DVStage}, BR1 = {RegisterBR1}, BR2 = {RegisterBR2}");
+            Console.WriteLine($"{CurrentSubinstructionName} (After T{controlPulseNum.ToString().PadLeft(2, '0')})");
+            Console.WriteLine($"A = {NumToOctal(RegisterA, 6)}, L = {NumToOctal(RegisterL, 6)}, G = {NumToOctal(RegisterG, 6)}, B = {NumToOctal(RegisterB, 6)}, Z = {NumToOctal(RegisterZ, 6)}, X = {NumToOctal(AdderX, 6)}, Y = {NumToOctal(AdderY, 6)}, U = {NumToOctal(AdderOutput, 6)}");
+            Console.WriteLine($"S = {NumToOctal(RegisterS, 6)}, Q = {NumToOctal(RegisterQ, 6)}, SQ = {NumToOctal(RegisterSQ, 2)}, EXTEND = {Convert.ToInt16(Extend)}, EB = {NumToOctal(RegisterEB >> 8, 2)}, FB = {NumToOctal(RegisterFB >> 10, 2)}, ST = {NumToOctal(RegisterST, 1)}, BR = {((Convert.ToInt16(RegisterBR1) * 10) + Convert.ToInt16(RegisterBR2)).ToString().PadLeft(2, '0')}");
         }
     }
 }
