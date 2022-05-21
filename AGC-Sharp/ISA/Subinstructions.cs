@@ -373,10 +373,10 @@ namespace AGC_Sharp.ISA
             cpu.ControlPulseQueue.Enqueue((5, new() { RC, WY, B15X, Z16 }));    // BR1 = 1, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((6, new() { RU, WL, TOV }));
             cpu.ControlPulseQueue.Enqueue((7, new() { RG, RSC, WB, TSGN }));
-            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY, PONEX }));    // BR1 = 0, BR2 = 0
-            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY }));           // BR1 = 0, BR2 = 1
-            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY, PONEX }));    // BR1 = 1, BR2 = 0
-            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY }));           // BR1 = 1, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY, PONEX, _8XP5 })); // BR1 = 0, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY, _8XP5 }));        // BR1 = 0, BR2 = 1
+            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY, PONEX, _8XP5 })); // BR1 = 1, BR2 = 0
+            cpu.ControlPulseQueue.Enqueue((8, new() { RA, WY, _8XP5 }));        // BR1 = 1, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((9, new() { RB, WA }));           // BR1 = 0, BR2 = 0
             cpu.ControlPulseQueue.Enqueue((9, new() { RB, WA }));           // BR1 = 0, BR2 = 1
             cpu.ControlPulseQueue.Enqueue((9, new() { RC, WA, Z15 }));      // BR1 = 1, BR2 = 0

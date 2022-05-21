@@ -10,6 +10,19 @@ namespace AGC_Sharp.ISA
     public static class ControlPulses
     {
         /// <summary>
+        /// Involuntary control pulse implicitly triggered by DV1.
+        /// Sets bit 12 of S, redirecting erasable memory reads
+        /// during division operations.
+        /// </summary>
+        /// <param name="cpu"></param>
+#pragma warning disable IDE1006 // Naming Styles
+        public static void _8XP5(Cpu cpu)
+#pragma warning restore IDE1006 // Naming Styles
+        {
+            cpu.RegisterS |= (1 << 11);
+        }
+
+        /// <summary>
         /// Copy A1-16 into X1-16 by private line.
         /// </summary>
         /// <param name="cpu"></param>

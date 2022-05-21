@@ -257,6 +257,12 @@ namespace AGC_Sharp
                 }
             }
 
+            // On T2, T5, T8, or T11, reset PIFL
+            if (controlPulseNum == 2 || controlPulseNum == 5 || controlPulseNum == 8 || controlPulseNum == 11)
+            {
+                PIFL = false;
+            }
+
             // If there are control pulses left to be performed, perform them if it's the proper pulse number
             if (ControlPulseQueue.Count > 0)
             {
@@ -315,7 +321,7 @@ namespace AGC_Sharp
             }
 
             // Memory reads are done after pulse 4, unless we're in a division sequence
-            if (controlPulseNum == 4 && !PIFL)
+            if (controlPulseNum == 4)
             {
                 // Check if the read is for erasable or fixed memory
                 if (RegisterS < 0x400)  // Erasable memory
@@ -329,15 +335,14 @@ namespace AGC_Sharp
                 }
                 else                    // Fixed memory
                 {
-                    RegisterG = memory.ReadWord(RegisterS, this);
-                    RegisterG = Helpers.Bit16To15(RegisterG, false);
+                    // Don't read from fixed memory during division steps 3, 7, 6, 4.
+                    // Based on SBF being inhibited by hardware logic during those phases.
+                    if (!DVSequence || DVStage < 2)
+                    {
+                        RegisterG = memory.ReadWord(RegisterS, this);
+                        RegisterG = Helpers.Bit16To15(RegisterG, false);
+                    }
                 }
-            }
-
-            // On T2, T5, T8, or T11, reset PIFL
-            if (controlPulseNum == 2 || controlPulseNum == 5 || controlPulseNum == 8 || controlPulseNum == 11)
-            {
-                PIFL = false;
             }
 
             // Only perform writeback if we performed an erasable read earlier
