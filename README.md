@@ -1,3 +1,5 @@
+NOTE: Development shifted to [AGCPlusPlus](https://github.com/CaptainSwag101/AGCPlusPlus)
+
 # AGC-Sharp
 An attempt at creating a control pulse-level emulator of the Block II Apollo guidance computer.
 
