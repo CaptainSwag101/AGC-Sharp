@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.3.32804.467
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AGC-Sharp", "AGC-Sharp\AGC-Sharp.csproj", "{8B3CDC51-AD8B-434D-901E-4911B32BDA66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AGC-Sharp", "AGC-Sharp\AGC-Sharp.csproj", "{F34FC756-6121-4350-A60C-616F3854ACAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8B3CDC51-AD8B-434D-901E-4911B32BDA66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B3CDC51-AD8B-434D-901E-4911B32BDA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B3CDC51-AD8B-434D-901E-4911B32BDA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B3CDC51-AD8B-434D-901E-4911B32BDA66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F34FC756-6121-4350-A60C-616F3854ACAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F34FC756-6121-4350-A60C-616F3854ACAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F34FC756-6121-4350-A60C-616F3854ACAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F34FC756-6121-4350-A60C-616F3854ACAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7DDFE40D-083A-44FD-961B-6E891EEB7F18}
+		SolutionGuid = {13E0FC29-CD64-486B-97FC-FD56D1C193F4}
 	EndGlobalSection
 EndGlobal
