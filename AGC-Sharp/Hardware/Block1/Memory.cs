@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AGC_Sharp.Hardware.Block1
 {
-    internal class Memory : IMemory
+    internal class Memory
     {
         private readonly word[] erasableMem;
         private readonly word[] fixedMem;
@@ -17,14 +17,17 @@ namespace AGC_Sharp.Hardware.Block1
             fixedMem = new word[Octal(60000)];
         }
 
-        public word ReadMemory(word address)
+        public word ReadErasable(word address)
         {
-            return 0;
+            word temp = erasableMem[address];
+            erasableMem[address] = 0;   // Erasable reads are destructive
+            return temp;
         }
 
-        public void WriteMemory(word address)
-        {
+        public void WriteErasable(word address, word data) => erasableMem[address] = data;
 
-        }
+        public word ReadFixed(word address) => fixedMem[address];
+
+        public void WriteFixed(word address, word data) => fixedMem[address] = data;
     }
 }

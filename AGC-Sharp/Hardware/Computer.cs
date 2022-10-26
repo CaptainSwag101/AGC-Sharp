@@ -8,9 +8,6 @@ namespace AGC_Sharp.Hardware
 {
     internal abstract class Computer
     {
-        public string[] Names { get; protected set; }
-        protected IMemory Memory { get; set; }
-        protected IScaler Scaler { get; set; }
-        protected ITimer Timer { get; set; }
+        public abstract void Execute();
     }
 }
