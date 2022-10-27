@@ -11,7 +11,8 @@ namespace AGC_Sharp
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         [ArgRequired, ArgShortcut("m"), ArgDescription("The AGC hardware type to emulate.")]
         public string MachineType { get; set; }
-        [ArgRequired, ArgShortcut("r"), ArgDescription("The core rope program file to load."), ArgExistingFile]
+
+        [ArgShortcut("r"), ArgDescription("The core rope program file to load."), ArgExistingFile]
         public string RopeFile { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }

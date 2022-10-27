@@ -22,5 +22,12 @@ namespace AGC_Sharp.Hardware.Block1
         public word Y;
         public word WriteBus;
         #endregion
+
+        #region Functions
+        public void Tick()
+        {
+
+        }
+        #endregion
     }
 }
