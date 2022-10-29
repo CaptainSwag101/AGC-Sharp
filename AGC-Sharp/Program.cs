@@ -14,6 +14,9 @@ namespace AGC_Sharp
 
         [ArgShortcut("r"), ArgDescription("The core rope program file to load."), ArgExistingFile]
         public string RopeFile { get; set; }
+
+        [ArgShortcut("l"), ArgDescription("The file to write log data into, rather than the terminal.")]
+        public string? LogFile { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
 
@@ -33,11 +36,16 @@ namespace AGC_Sharp
                 return;
             }
 
+            if (parsedArgs.LogFile is not null)
+            {
+                SetupLogWriter(parsedArgs.LogFile);
+            }
+
             // Determine the computer type to emulate from the input arguments.
             Computer? computer = null;
             if (Hardware.Block1.AGC.Names.Any(s => s.Equals(parsedArgs.MachineType)))
             {
-                computer = new Hardware.Block1.AGC(parsedArgs.RopeFile);
+                computer = new Hardware.Block1.AGC();
             }
             else
             {
@@ -47,6 +55,7 @@ namespace AGC_Sharp
 
             while (true)
             {
+                computer.Initialize(parsedArgs.RopeFile);
                 computer.Execute();
             }
         }

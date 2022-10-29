@@ -10,6 +10,12 @@ namespace AGC_Sharp.Hardware.Block1
     {
         private ulong currentState;
         private ulong prevState;
+        private AGC agcReference;
+
+        public Scaler(AGC agc)
+        {
+            agcReference = agc;
+        }
 
         public void Tick()
         {
@@ -22,7 +28,19 @@ namespace AGC_Sharp.Hardware.Block1
             prevState = currentState;
             ++currentState;
 
+            // TODO: Perform necessary tasks for any of the 18 ring counter stages.
+        }
 
+        private bool ScalerRingState(byte number)
+        {
+            ulong bitSelect = (ulong)Math.Pow(2, number);
+            return ((currentState & bitSelect) == 1);
+        }
+
+        private bool ScalerRingChanged(byte number)
+        {
+            ulong bitSelect = (ulong)Math.Pow(2, number);
+            return ((currentState & bitSelect) != (prevState & bitSelect));
         }
     }
 }

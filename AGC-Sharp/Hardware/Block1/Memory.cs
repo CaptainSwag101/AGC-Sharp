@@ -10,9 +10,12 @@ namespace AGC_Sharp.Hardware.Block1
     {
         private readonly word[] erasableMem;
         private readonly word[] fixedMem;
+        private AGC agcReference;
 
-        public Memory()
+        public Memory(AGC agc)
         {
+            agcReference = agc;
+
             erasableMem = new word[Octal(2000)];
             fixedMem = new word[Octal(60000)];
         }

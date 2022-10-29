@@ -8,6 +8,7 @@ namespace AGC_Sharp.Hardware
 {
     internal abstract class Computer
     {
+        public abstract void Initialize(string ropeFile);
         public abstract void Execute();
     }
 }
