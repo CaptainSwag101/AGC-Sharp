@@ -29,12 +29,23 @@ namespace AGC_Sharp.Hardware.Block1
             ++currentState;
 
             // TODO: Perform necessary tasks for any of the 18 ring counter stages.
+            if (ScalerRingState(9) && ScalerRingChanged(9)) // F09B
+            {
+                // If not FS10
+                if (!ScalerRingState(10))
+                {
+                    agcReference.Cpu.Counters[(int)CounterSlot.TIME4] = CounterAction.Up;
+                }
+
+                // TODO: Generate KEYRUPT1, KEYRUPT2, or MARKRUPT if keys are pending.
+                // TODO: Read the DSKY queue.
+            }
         }
 
         private bool ScalerRingState(byte number)
         {
             ulong bitSelect = (ulong)Math.Pow(2, number);
-            return ((currentState & bitSelect) == 1);
+            return ((currentState & bitSelect) > 0);
         }
 
         private bool ScalerRingChanged(byte number)

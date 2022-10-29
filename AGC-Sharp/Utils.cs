@@ -12,7 +12,7 @@ namespace AGC_Sharp
 
         public static void SetupLogWriter(string logPath)
         {
-            debugPrintStream = new(new FileStream(logPath, FileMode.Create, FileAccess.Write, FileShare.Read));
+            debugPrintStream = new(new FileStream(logPath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read));
         }
 
         public static async void Log(string? message = null)
@@ -26,7 +26,8 @@ namespace AGC_Sharp
             }
             else
             {
-                await Task.Run(() => debugPrintStream.WriteAsync(message));
+                await Task.Run(() => debugPrintStream.Write(message));
+                await debugPrintStream.FlushAsync();
             }
         }
 

@@ -6,6 +6,43 @@ using System.Threading.Tasks;
 
 namespace AGC_Sharp.Hardware.Block1
 {
+    [Flags]
+    internal enum CounterAction
+    {
+        None,
+        Up,
+        Down
+    }
+
+    internal enum CounterSlot
+    {
+        TIME2, TIME1, TIME3, TIME4, TIME5, TIME6,
+        CDUX, CDUY, CDUZ,
+        TRN, SHFT,
+        PIPAX, PIPAY, PIPAZ,
+        BMAGX, BMAGY, BMAGZ,
+        INLINK,
+        RNRAD,
+        GYROD,
+        CDUXD, CDUYD, CDUZD,
+        TRUND, SHAFTD,
+        THRSTD,
+        EMSD,
+        OTLNK,
+        ALT
+    }
+
+    internal enum RuptSlot
+    {
+        GO,
+        T6RUPT, T5RUPT, T3RUPT, T4RUPT,
+        KEYRUPT1, KEYRUPT2,
+        MARKRUPT,
+        UPRUPT, DOWNRUPT,
+        RADARRUPT,
+        RUPT10L
+    }
+
     internal partial class CPU
     {
         #region Central Registers
@@ -24,8 +61,8 @@ namespace AGC_Sharp.Hardware.Block1
         private bool DV;
         private byte DVStage;
         private bool FetchNextInstruction;
-        private bool[] Interrupts;
-        private word[] Counters;
+        public bool[] Interrupts;
+        public CounterAction[] Counters;
         private bool NightWatchman;
         #endregion
 
@@ -41,7 +78,7 @@ namespace AGC_Sharp.Hardware.Block1
             FetchNextInstruction = true;
             CurrentTimepulse = 12;
             Interrupts = new bool[11];
-            Counters = new word[20];
+            Counters = new CounterAction[29];
         }
 
         public void GetErasableAddress()
