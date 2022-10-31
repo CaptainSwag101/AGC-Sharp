@@ -104,7 +104,16 @@ namespace AGC_Sharp.Hardware.Block1
 
         public void UpdateAdder()
         {
+            int temp = X + Y;
 
+            int carry = ExplicitCarry ? 1 : 0;  // Explicit carry
+            if (!NOEAC)
+            {
+                carry |= ((temp >> 16) & 1);    // End-around carry if not inhibited
+            }
+            temp += carry;
+
+            U = (word)temp;
         }
 
         public void PrintStateInfo()
