@@ -8,6 +8,10 @@ namespace AGC_Sharp.Hardware.Block1
 {
     internal class Memory
     {
+        public const word MEM_ERASABLE_END = 1023;          // Octal 1777
+        public const word MEM_FIXED_BANKED_START = 3072;    // Octal 6000
+        public const word MEM_FIXED_BANKED_END = 4095;      // Octal 7777
+
         private readonly word[] erasableMem;
         private readonly word[] fixedMem;
         private AGC agcReference;

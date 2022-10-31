@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AGC_Sharp.Hardware.Block1
 {
@@ -46,7 +47,7 @@ namespace AGC_Sharp.Hardware.Block1
     internal partial class CPU
     {
         #region Central Registers
-        private word A, LP, Q, Z, G, IN, OUT, B, BNK, U, X, Y;
+        private word A, LP, Q, Z, G, B, BNK, U, X, Y, IN0, IN1, IN2, IN3, OUT0, OUT1, OUT2, OUT3, OUT4;
         #endregion
 
         #region State Information
@@ -78,17 +79,27 @@ namespace AGC_Sharp.Hardware.Block1
             FetchNextInstruction = true;
             CurrentTimepulse = 12;
             Interrupts = new bool[11];
-            Counters = new CounterAction[29];
+            Counters = new CounterAction[22];
         }
 
-        public void GetErasableAddress()
+        public word GetErasableAddress()
         {
-
+            if (S == Octal(67)) NightWatchman = true;
+            return S;
         }
 
-        public void GetFixedAddress()
+        public word GetFixedAddress()
         {
+            word absoluteAddress = S;
 
+            // TODO: This code was adapted from Block II memory addressing, verify that's how Block I really does it.
+            if (S >= Memory.MEM_FIXED_BANKED_START && S <= Memory.MEM_FIXED_BANKED_END)
+            {
+                absoluteAddress &= Octal(1777);
+                absoluteAddress |= BNK; // Prepend the bank selection bits to address it
+            }
+
+            return absoluteAddress;
         }
 
         public void UpdateAdder()
