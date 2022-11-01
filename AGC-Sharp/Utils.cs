@@ -43,4 +43,14 @@ namespace AGC_Sharp
             return result;
         }
     }
+
+    internal class Bitmasks
+    {
+        public const word BITMASK_1_12  = 0x0FFF;
+        public const word BITMASK_10_14 = 0x3E00;
+        public const word BITMASK_14    = 0x2000;
+        public const word BITMASK_14_15 = 0x6000;
+        public const word BITMASK_15_16 = 0xC000;
+        public const word BITMASK_16    = 0x8000;
+    }
 }
