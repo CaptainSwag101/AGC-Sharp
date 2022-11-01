@@ -42,6 +42,13 @@ namespace AGC_Sharp
             word result = Convert.ToUInt16(str, 8);
             return result;
         }
+
+        public static string ToOctal(word input, byte padding = 0)
+        {
+            string temp = Convert.ToString(input, 8);
+            temp = temp.PadLeft(padding, '0');
+            return temp;
+        }
     }
 
     internal class Bitmasks

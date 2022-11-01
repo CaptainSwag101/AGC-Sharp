@@ -123,7 +123,27 @@ namespace AGC_Sharp.Hardware.Block1
 
         public void PrintStateInfo()
         {
-
+            StringBuilder stateInfo = new();
+            stateInfo.AppendLine($"{currentSubinstruction?.Name} (T{Timepulse.ToString().PadLeft(2, '0')})");
+            string[] line1 =
+            {
+                $"A: {ToOctal(A, 6)}",
+                $"Z: {ToOctal(Z, 6)}",
+                $"Q: {ToOctal(Q, 6)}",
+                $"LP: {ToOctal(LP, 6)}",
+                "\n"
+            };
+            string[] line2 =
+            {
+                $"B: {ToOctal(A, 6)}",
+                $"SQ: {ToOctal(Z, 3)}",
+                $"ST: {ToOctal(Q, 1)}\t",
+                $"BNK: {ToOctal(BNK, 6)}",
+            };
+            stateInfo.AppendJoin('\t', line1);
+            stateInfo.AppendJoin('\t', line2);
+            stateInfo.AppendLine();
+            LogLine(stateInfo.ToString());
         }
 
         public void Tick()
@@ -146,7 +166,25 @@ namespace AGC_Sharp.Hardware.Block1
             // TODO: Before timepulse 1, do INKBT1
             if (Timepulse == 1)
             {
-                // Do stuff
+                if (INKL)
+                {
+                    // Remember what we wanted to do, so we can come back to it later.
+                    pendingSubinstruction = currentSubinstruction;
+
+                    foreach (var c in Counters)
+                    {
+                        if (c == CounterAction.Up)
+                        {
+                            // TODO: PINC subinstruction
+                            break;
+                        }
+                        else if (c == CounterAction.Down)
+                        {
+                            // TODO: DINC subinstruction
+                            break;
+                        }
+                    }
+                }
 
                 // Reset next-instruction flag(s)
                 if (ST != 2)
@@ -167,8 +205,8 @@ namespace AGC_Sharp.Hardware.Block1
                 // Determine whether we are targeting fixed or erasable memory.
             }
 
-
-            PrintStateInfo();   // Print logging info for the timepulse or MCT.
+            if (Timepulse == 1)
+                PrintStateInfo();   // Print logging info for the timepulse or MCT.
 
 
             WriteBus = 0;   // Clear the write lines
@@ -263,9 +301,9 @@ namespace AGC_Sharp.Hardware.Block1
             // and try again at the next memory location. This generally indicates a problem.
             if (!foundImplementation)
             {
-                LogLine("Unimplemented subinstruction, replacing with STD2.");
+                //LogLine("Unimplemented subinstruction, replacing with STD2.");
 
-                var std2 = ImplementedSubinstructions[0];
+                var std2 = ImplementedSubinstructions[0] with { Name = "Unimplemented Subinstruction, replaced with STD2" };
                 currentSubinstruction = std2;
                 S = (word)(Z & BITMASK_1_12);
             }
