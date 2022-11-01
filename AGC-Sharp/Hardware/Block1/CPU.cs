@@ -135,9 +135,9 @@ namespace AGC_Sharp.Hardware.Block1
             };
             string[] line2 =
             {
-                $"B: {ToOctal(A, 6)}",
-                $"SQ: {ToOctal(Z, 3)}",
-                $"ST: {ToOctal(Q, 1)}\t",
+                $"B: {ToOctal(B, 6)}",
+                $"SQ: {ToOctal(SQ, 1)}\t",
+                $"ST: {ToOctal(ST, 1)}\t",
                 $"BNK: {ToOctal(BNK, 6)}",
             };
             stateInfo.AppendJoin('\t', line1);
@@ -206,7 +206,9 @@ namespace AGC_Sharp.Hardware.Block1
             }
 
             if (Timepulse == 1)
+            {
                 PrintStateInfo();   // Print logging info for the timepulse or MCT.
+            }
 
 
             WriteBus = 0;   // Clear the write lines
