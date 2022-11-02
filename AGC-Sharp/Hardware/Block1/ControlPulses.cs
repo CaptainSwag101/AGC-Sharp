@@ -20,6 +20,36 @@ namespace AGC_Sharp.Hardware.Block1
             cpu.FetchNextInstruction = true;
         }
 
+        private static void R1(CPU cpu)
+        {
+            cpu.WriteBus |= 1;
+        }
+
+        private static void R1C(CPU cpu)
+        {
+            cpu.WriteBus |= 0xFFFE;
+        }
+
+        private static void R2(CPU cpu)
+        {
+            cpu.WriteBus |= 2;
+        }
+
+        private static void R22(CPU cpu)
+        {
+            cpu.WriteBus |= Octal(22);
+        }
+
+        private static void R24(CPU cpu)
+        {
+            cpu.WriteBus |= Octal(24);
+        }
+
+        private static void RA(CPU cpu)
+        {
+            cpu.WriteBus |= cpu.A;
+        }
+
         private static void RB(CPU cpu)
         {
             cpu.WriteBus |= cpu.B;
@@ -92,6 +122,61 @@ namespace AGC_Sharp.Hardware.Block1
         private static void RZ(CPU cpu)
         {
             cpu.WriteBus |= cpu.Z;
+        }
+
+        private static void ST1(CPU cpu)
+        {
+            cpu.STNext |= 1;
+        }
+
+        private static void ST2(CPU cpu)
+        {
+            cpu.STNext |= 2;
+        }
+
+        private static void TMZ(CPU cpu)
+        {
+            if (cpu.WriteBus == 0xFFFF)
+            {
+                cpu.BR |= 0b01; // Set BR2
+            }
+        }
+
+        private static void TOV(CPU cpu)
+        {
+            byte signBits = (byte)((cpu.A & BITMASK_15_16) >> 14);
+            if (signBits == 0b01)
+            {
+                cpu.BR |= 0b01;
+            }
+            else if (signBits == 0b10)
+            {
+                cpu.BR |= 0b10;
+            }
+        }
+
+        private static void TRSM(CPU cpu)
+        {
+            if (cpu.S == Octal(25))
+            {
+                cpu.ST |= 2;
+            }
+        }
+
+        private static void TSGN(CPU cpu)
+        {
+            if ((cpu.A & BITMASK_16) > 0)
+            {
+                cpu.BR |= 0b10; // Set BR1
+            }
+        }
+
+        private static void TSGN2(CPU cpu)
+        {
+            if ((cpu.A & BITMASK_16) > 0)
+            {
+                cpu.BR |= 0b01; // Set BR2
+            }
         }
 
         private static void WA(CPU cpu)
@@ -208,6 +293,11 @@ namespace AGC_Sharp.Hardware.Block1
                     cpu.BNK = cpu.WriteBus;
                     break;
             };
+        }
+
+        private static void WX(CPU cpu)
+        {
+            cpu.X |= cpu.WriteBus;
         }
 
         private static void WY(CPU cpu)

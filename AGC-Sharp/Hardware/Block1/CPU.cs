@@ -69,8 +69,8 @@ namespace AGC_Sharp.Hardware.Block1
 
         #region Emulator-related Data
         private AGC agcReference;
-        private Subinstruction currentSubinstruction;
-        private Subinstruction pendingSubinstruction;
+        private Subinstruction? currentSubinstruction = null;
+        private Subinstruction? pendingSubinstruction = null;
         #endregion
 
         #region Functions
