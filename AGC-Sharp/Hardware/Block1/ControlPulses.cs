@@ -9,33 +9,33 @@ namespace AGC_Sharp.Hardware.Block1
 {
     internal partial class CPU
     {
-        public static void CI(CPU cpu)
+        private static void CI(CPU cpu)
         {
             cpu.ExplicitCarry = true;
             cpu.UpdateAdder();
         }
 
-        public static void NISQ(CPU cpu)
+        private static void NISQ(CPU cpu)
         {
             cpu.FetchNextInstruction = true;
         }
 
-        public static void RB(CPU cpu)
+        private static void RB(CPU cpu)
         {
             cpu.WriteBus |= cpu.B;
         }
 
-        public static void RC(CPU cpu)
+        private static void RC(CPU cpu)
         {
             cpu.WriteBus |= (word)(~cpu.B);
         }
 
-        public static void RG(CPU cpu)
+        private static void RG(CPU cpu)
         {
             cpu.WriteBus |= cpu.G;
         }
 
-        public static void RSC(CPU cpu)
+        private static void RSC(CPU cpu)
         {
             switch (cpu.S)
             {
@@ -84,22 +84,27 @@ namespace AGC_Sharp.Hardware.Block1
             };
         }
 
-        public static void RU(CPU cpu)
+        private static void RU(CPU cpu)
         {
             cpu.WriteBus |= cpu.U;
         }
 
-        public static void RZ(CPU cpu)
+        private static void RZ(CPU cpu)
         {
             cpu.WriteBus |= cpu.Z;
         }
 
-        public static void WB(CPU cpu)
+        private static void WA(CPU cpu)
+        {
+            cpu.A = cpu.WriteBus;
+        }
+
+        private static void WB(CPU cpu)
         {
             cpu.B = cpu.WriteBus;
         }
 
-        public static void WG(CPU cpu)
+        private static void WG(CPU cpu)
         {
             word temp = cpu.WriteBus;
 
@@ -146,12 +151,17 @@ namespace AGC_Sharp.Hardware.Block1
             cpu.G = temp;
         }
 
-        public static void WS(CPU cpu)
+        private static void WQ(CPU cpu)
+        {
+            cpu.Q = cpu.WriteBus;
+        }
+
+        private static void WS(CPU cpu)
         {
             cpu.S = (word)(cpu.WriteBus & BITMASK_1_12);
         }
 
-        public static void WSC(CPU cpu)
+        private static void WSC(CPU cpu)
         {
             switch (cpu.S)
             {
@@ -200,13 +210,13 @@ namespace AGC_Sharp.Hardware.Block1
             };
         }
 
-        public static void WY(CPU cpu)
+        private static void WY(CPU cpu)
         {
             cpu.Y = cpu.WriteBus;
             cpu.UpdateAdder();
         }
 
-        public static void WZ(CPU cpu)
+        private static void WZ(CPU cpu)
         {
             cpu.Z = cpu.WriteBus;
         }

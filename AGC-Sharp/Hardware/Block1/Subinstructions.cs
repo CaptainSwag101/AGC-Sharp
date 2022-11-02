@@ -12,7 +12,8 @@ namespace AGC_Sharp.Hardware.Block1
     {
         private Subinstruction[] ImplementedSubinstructions =
         {
-            new Subinstruction(2, Octal(000), Octal(000), "STD2", STD2),
+            new Subinstruction(2, Octal(0), Octal(0), "STD2", STD2),
+            new Subinstruction(0, Octal(0), Octal(7), "TC0", TC0),
         };
 
         private static void STD2(CPU cpu)
@@ -46,6 +47,50 @@ namespace AGC_Sharp.Hardware.Block1
                     RB(cpu);
                     WSC(cpu);
                     WG(cpu);
+                    break;
+                case 11:
+                    NISQ(cpu);
+                    break;
+            }
+        }
+
+        private static void TC0(CPU cpu)
+        {
+            switch (cpu.Timepulse)
+            {
+                case 1:
+                    RB(cpu);
+                    WY(cpu);
+                    WS(cpu);
+                    CI(cpu);
+                    break;
+                case 3:
+                    WG(cpu);
+                    break;
+                case 4:
+                    WA(cpu);
+                    //WOVI(cpu);
+                    break;
+                case 7:
+                    RG(cpu);
+                    RSC(cpu);
+                    WB(cpu);
+                    //WP(cpu);
+                    break;
+                case 8:
+                    RZ(cpu);
+                    WQ(cpu);
+                    //GP(cpu);
+                    //TP(cpu);
+                    break;
+                case 9:
+                    RB(cpu);
+                    WSC(cpu);
+                    WG(cpu);
+                    break;
+                case 10:
+                    RU(cpu);
+                    WZ(cpu);
                     break;
                 case 11:
                     NISQ(cpu);
